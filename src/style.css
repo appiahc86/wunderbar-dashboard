@@ -1,0 +1,9 @@
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+.data-table-font-size{
+  font-size: 0.75em;
+}
+
