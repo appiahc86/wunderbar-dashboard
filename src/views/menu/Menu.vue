@@ -6,30 +6,30 @@ import Column from 'primevue/column';
 import {useHomeStore} from "@/store/home";
 
 const store = useHomeStore();
-const categories = ref([]);
-const categoryId = ref('');
+const menu = ref([]);
+const menuId = ref('');
 const loading = ref(false);
 const saveLoading = ref(false);
 const editLoading = ref(false);
 const deleteLoading = ref(false);
-const saveCatData = reactive({name: '', image: null});
-const editCatData = reactive({id: null, name: '', image: null, imageToSave: null});
+const saveMenuData = reactive({name: '', image: null});
+const editMenuData = reactive({id: null, name: '', image: null, imageToSave: null});
 const imagePath = ref('');
 const confirmDeleteDialog = ref();
 const editDialog = ref();
 
-//Get all categories
-const getCategories = async () => {
+//Get all menu
+const getMenu = async () => {
   try {
     loading.value = true;
-    const response = await  axios.get('/admin/categories',
+    const response = await  axios.get('/admin/menu',
         {
           headers: { 'Authorization': `Bearer ${store.token}`}
         }
     )
 
     if (response.status === 200){
-      categories.value = response.data.categories;
+      menu.value = response.data.menu;
       imagePath.value = response.data.path;
     }
 
@@ -46,24 +46,31 @@ const getCategories = async () => {
   }finally { loading.value = false; }
 
 }
-getCategories();
+getMenu();
 
 
 const handleFileChange = (event) => {
-  saveCatData.image = event.target.files[0];
-  document.getElementById('image').src = window.URL.createObjectURL(event.target.files[0]);
-   document.getElementById('image').style.display = 'block';
+  const targetImageTag = document.getElementById('image');
+  if(typeof event.target.files[0] !== 'undefined'){
+    saveMenuData.image = event.target.files[0];
+    targetImageTag.src = window.URL.createObjectURL(event.target.files[0]);
+    targetImageTag.style.display = 'block';
+  }else {
+    saveMenuData.image = null;
+    targetImageTag.removeAttribute('src');
+    targetImageTag.style.display = 'none';
+  }
 }
 
-//Save Category
-const saveCategory = async () => {
+//Save Menu
+const saveMenu = async () => {
   try {
     saveLoading.value = true;
     const formData = new FormData();
-    formData.append('name', saveCatData.name);  // Add form fields
-    formData.append('image', saveCatData.image);  // Add image file
+    formData.append('name', saveMenuData.name);  // Add form fields
+    formData.append('image', saveMenuData.image);  // Add image file
 
-    const response = await  axios.post('/admin/categories',
+    const response = await  axios.post('/admin/menu',
         formData,
         {
           headers: {
@@ -74,21 +81,20 @@ const saveCategory = async () => {
     )
 
     if (response.status === 201){
-
+      console.log(response.data)
       imagePath.value = response.data.path;
-      categories.value.unshift({
+      menu.value.unshift({
         id: response.data.id,
-        name: saveCatData.name,
+        name: saveMenuData.name,
         image: response.data.image
       })
       document.getElementById('image').style.display = 'none';
       document.getElementById('saveFile').value = '';
-      saveCatData.name = "";
-      saveCatData.image = null;
+      saveMenuData.name = "";
+      saveMenuData.image = null;
     }
 
   }catch (e) {
-
     if (e.response) return toast.add({severity:'warn', detail: `${e.response.data}`, life: 4000});
     if (e.request && e.request.status === 0) {
       return toast.add({severity:'error',
@@ -100,41 +106,41 @@ const saveCategory = async () => {
       life: 4000});
   }finally { saveLoading.value = false; }
 
-}
+} //./Save menu
 
 
 
 //Show Edit category dialog
-const openEditDialog = (cat) => {
+const openEditDialog = (men) => {
 
   document.querySelector('#editInputImage').value = "";
-  editCatData.id = null;
-  editCatData.name = '';
-  editCatData.image = null;
-  editCatData.imageToSave = null;
- editCatData.id = cat.id;
- editCatData.name = cat.name;
- editCatData.image = cat.image;
+  editMenuData.id = null;
+  editMenuData.name = '';
+  editMenuData.image = null;
+  editMenuData.imageToSave = null;
+ editMenuData.id = men.id;
+ editMenuData.name = men.name;
+ editMenuData.image = men.image;
  editDialog.value.showModal();
 
 }
 
 const handleEditFileChange = (event) => {
-  editCatData.imageToSave = event.target.files[0];
+  editMenuData.imageToSave = event.target.files[0];
   // document.getElementById('editImage').src = window.URL.createObjectURL(event.target.files[0]);
 }
 
-//Edit Category
-const editCategory = async () => {
+//Edit Menu
+const editMenu = async () => {
   try {
     editLoading.value = true;
     const formData = new FormData();
-    formData.append('id', editCatData.id);
-    formData.append('name', editCatData.name);
-    formData.append('oldImage', editCatData.image);
-    formData.append('image', editCatData.imageToSave);  // Add image file
+    formData.append('id', editMenuData.id);
+    formData.append('name', editMenuData.name);
+    formData.append('oldImage', editMenuData.image);
+    formData.append('image', editMenuData.imageToSave);  // Add image file
 
-    const response = await  axios.post('/admin/categories/edit',
+    const response = await  axios.post('/admin/menu/edit',
         formData,
         {
           headers: {
@@ -147,18 +153,18 @@ const editCategory = async () => {
     if (response.status === 200){
 
       imagePath.value = response.data.path;
-      for (const category of categories.value) {
-        if (category.id.toString() === editCatData.id.toString()){
-          category.name = response.data.name;
-          if (editCatData.imageToSave){category.image = response.data.image;}
+      for (const men of menu.value) {
+        if (men.id.toString() === editMenuData.id.toString()){
+          men.name = response.data.name;
+          if (editMenuData.imageToSave){men.image = response.data.image;}
           break;
         }
       }
 
-      editCatData.id = null;
-      editCatData.name = "";
-      editCatData.image = null;
-      editCatData.imageToSave = null;
+      editMenuData.id = null;
+      editMenuData.name = "";
+      editMenuData.image = null;
+      editMenuData.imageToSave = null;
     }
 
   }catch (e) {
@@ -185,29 +191,29 @@ const editCategory = async () => {
 
 //Confirm delete
 const confirmDelete = (id) => {
-  categoryId.value = id;
+  menuId.value = id;
   confirmDeleteDialog.value.showModal();
 }
 
-//Delete category
-const deleteCategory = async () => {
+//Delete Menu
+const deleteMenu = async () => {
   try {
 
     deleteLoading.value = true;
-    const foundImage = categories.value.find((cat) => cat.id.toString() === categoryId.value.toString());
+    const foundImage = menu.value.find((men) => men.id.toString() === menuId.value.toString());
 
-    const response = await  axios.post('/admin/categories/delete',
-        {id: categoryId.value, image: foundImage.image},
+    const response = await  axios.post('/admin/menu/delete',
+        {id: menuId.value, image: foundImage.image},
         {
           headers: { 'Authorization': `Bearer ${store.token}`}
         }
     )
 
     if (response.status === 200) {
-      categories.value = categories.value.filter(cat => {
-        return cat.id.toString() !== categoryId.value.toString();
+      menu.value = menu.value.filter(men => {
+        return men.id.toString() !== menuId.value.toString();
       })
-      categoryId.value = '';
+      menuId.value = '';
     }
 
   }catch (e) {
@@ -231,8 +237,8 @@ const deleteCategory = async () => {
 <div class="container mt-4">
   <div class="row">
     <div class="col-sm-5">
-      <h3 class="mb-2">Kategorie hinzufügen</h3>
-      <form @submit.prevent="saveCategory" id="addCatForm">
+      <h3 class="mb-2">Menü hinzufügen</h3>
+      <form @submit.prevent="saveMenu">
         <div class="mb-2">
 
           <input type="file" accept="image/*" class="form-control mb-2"
@@ -242,8 +248,8 @@ const deleteCategory = async () => {
 
         </div>
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="Kategorie eingeben"
-                 v-model.trim="saveCatData.name"  required>
+          <input type="text" class="form-control" placeholder="Menü hinzufügen"
+                 v-model.trim="saveMenuData.name"  required>
           <button v-if="saveLoading" class="btn btn-primary fw-bold" disabled>
             <span class="spinner-border spinner-border-sm"></span> Bitte warten</button>
           <button v-else class="btn btn-primary fw-bold">Einreichen</button>
@@ -253,7 +259,7 @@ const deleteCategory = async () => {
     <div class="col-sm-7">
       <div class="table-responsive mt-2">
         <!--        Table -->
-        <DataTable :value="categories" :paginator="true" :rows="10" dataKey="id" :loading="loading"
+        <DataTable :value="menu" :paginator="true" :rows="10" dataKey="id" :loading="loading"
                    class="p-datatable-sm p-datatable-striped p-datatable-hoverable-rows p-datatable-gridlines"
                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport
                    RowsPerPageDropdown" responsiveLayout="scroll" :rowsPerPageOptions="[10,25, 50]"
@@ -262,7 +268,7 @@ const deleteCategory = async () => {
             <h6 class="text-white fw-bold">Daten werden geladen. Bitte warten. <span class="spinner-border spinner-border-sm"></span></h6>
 
           </template>
-          <Column field="name" header="Kategorie" sortable class="data-table-font-size">
+          <Column field="name" header="Menü" sortable class="data-table-font-size">
             <template #body="{data}">
               <td class="text-capitalize">
                 {{ data.name }}
@@ -306,7 +312,7 @@ const deleteCategory = async () => {
 <!-- Edit dialog  -->
   <dialog ref="editDialog" style="border: none;" class="p-3">
     <button class="text-white bg-danger" style="float: right;" @click="editDialog.close()">X</button><br><br>
-    <form @submit.prevent="editCategory" id="addCatForm">
+    <form @submit.prevent="editMenu">
       <div class="mb-2">
 
         <input type="file" class="form-control mb-2" id="editInputImage" @change="handleEditFileChange"
@@ -320,7 +326,7 @@ const deleteCategory = async () => {
       </div>
       <div class="input-group">
         <input type="text" class="form-control" placeholder="Kategorie eingeben"
-               v-model.trim="editCatData.name"  required>
+               v-model.trim="editMenuData.name"  required>
         <button v-if="editLoading" class="btn btn-primary fw-bold" disabled>
           <span class="spinner-border spinner-border-sm"></span> Bitte warten</button>
         <button v-else class="btn btn-primary fw-bold">Einreichen</button>
@@ -331,7 +337,7 @@ const deleteCategory = async () => {
 
   <!--      Confirm delete dialog    -->
   <dialog ref="confirmDeleteDialog" style="border: none;" class="p-5">
-    <!-- Deleting this item will delete all menu items associated with it. -->
+    <!-- Deleting this item will delete all menuItems items associated with it. -->
     <p>Durch das Löschen dieses Elements werden alle damit verbundenen <br> Menüelemente gelöscht</p>
     <!-- Are you sure you want to do this? -->
     <h6 class="text-center my3">Sind Sie sicher, dass Sie dies tun möchten?</h6>
@@ -339,7 +345,7 @@ const deleteCategory = async () => {
       <button class="btn btn-secondary btn-sm mx-3" @click="confirmDeleteDialog.close()">Stornieren</button>
       <button class="btn btn-danger btn-sm" disabled v-if="deleteLoading">
         <span class=" spinner-border spinner-border-sm"></span> Bitte warten</button>
-      <button v-else class="btn btn-danger btn-sm" @click="deleteCategory">Fortfahren</button>
+      <button v-else class="btn btn-danger btn-sm" @click="deleteMenu">Fortfahren</button>
     </div>
   </dialog>
 

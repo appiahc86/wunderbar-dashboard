@@ -4,7 +4,8 @@ import {useHomeStore} from "@/store/home";
 import Home from '../views/Home.vue';
 import Dashboard from '../views/Dashboard.vue';
 import  userRouter from "@/router/users/index";
-import categoriesRouter from "@/router/categories";
+import menuRouter from "@/router/menu/index";
+import menuItemsRouter from "@/router/menuItems/index";
 
 
 const routes = [
@@ -23,7 +24,8 @@ const routes = [
 
     //Load imported routes
     ...userRouter,
-    ...categoriesRouter,
+    ...menuRouter,
+    ...menuItemsRouter,
 
 //    redirect to home page if route not found
     {

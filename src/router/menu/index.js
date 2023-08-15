@@ -1,10 +1,10 @@
-import MenuItems from "@/views/menu/MenuItems.vue";
+import Menu from "@/views/menu/Menu.vue";
 
 const menuRouter = [
     {
         path: '/menu',
         name: 'menu',
-        component: MenuItems,
+        component: Menu,
         // meta: {requiresAuth: true}
     },
 

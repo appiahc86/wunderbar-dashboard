@@ -60,20 +60,20 @@ const logout = () => {
             <router-link :to="{name: 'home'}"><span>&#128101;</span> Benutzer</router-link>
         </section>
       <section>
-        <router-link :to="{name: 'categories'}"><span>&#11088;</span> Kategorien</router-link>
+        <router-link :to="{name: 'menu'}"><span>&#11088;</span> Speisekarte</router-link>
       </section>
 
       <section>
         <div class="dropdown">
           <a class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             <span>&#127869;</span>
-            Speisekarte <!--Menu-->
+            Menüpunkte <!--Menu Items-->
           </a>
           <ul class="dropdown-menu dropdown-menu-dark w-100">
-            <li><router-link :to="{name: 'home'}">
-              <span class="pi pi-list"></span>&nbsp; Listenmenü</router-link></li>
+            <li><router-link :to="{name: 'menu-items'}">
+              <span class="pi pi-list"></span>&nbsp; Menüpunkte auflisten</router-link></li>
 
-            <li><router-link :to="{name: 'home'}">
+            <li><router-link :to="{name: 'add-menu-item'}">
               <span class="pi pi-plus-circle"></span>&nbsp; Menüpunkt hinzufügen</router-link></li>
 
           </ul>
