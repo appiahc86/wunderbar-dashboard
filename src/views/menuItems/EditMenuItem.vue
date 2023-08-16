@@ -16,6 +16,7 @@ const loadDialog = ref();
 const choices = ref([]);
 const path = ref('');
 const formData = reactive({
+  id: null,
   name: '',
   menuId: '',
   price: null,
@@ -73,6 +74,7 @@ const load = async () => {
     )
 
     if (response.status === 200){
+      formData.id = response.data.menuItem.id;
       formData.name = response.data.menuItem.name;
       formData.menuId = response.data.menuItem.menuId;
       formData.price = response.data.menuItem.price;
@@ -145,6 +147,7 @@ const saveData = async () => {
 
 
     const myData = new FormData();
+    myData.append('id', formData.id);
     myData.append('name', formData.name);
     myData.append('price', formData.price);
     myData.append('choiceOf', JSON.stringify(formData.choiceOf));
@@ -155,7 +158,6 @@ const saveData = async () => {
     myData.append('newImage', formData.newImage);
 
 
-    // return console.log(myData);
     //..........................validation goes here ...................................
 
     const response = await  axios.post('/admin/menuItems/edit',
@@ -169,7 +171,8 @@ const saveData = async () => {
     )
 
     if (response.status === 200){
-      console.log('ok')
+      toast.add({severity:'success', detail: ` Datensatz gespeichert`, life: 3000});
+      router.push({name: 'menu-items'})
     }
 
   }catch (e) {

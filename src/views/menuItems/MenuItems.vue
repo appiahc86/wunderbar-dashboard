@@ -1,12 +1,13 @@
 <script setup>
 import {reactive, ref} from "vue";
 import axios from "@/axios";
-import moment from "moment";
 import { formatNumber } from "@/functions";
 import {useHomeStore} from "@/store/home";
 import DataTable from "primevue/datatable";
+import InputText from "primevue/inputtext";
 import Column from "primevue/column";
 import {onBeforeRouteLeave, useRouter} from "vue-router";
+import {FilterMatchMode} from "primevue/api";
 
 const router = useRouter();
 const store = useHomeStore();
@@ -17,13 +18,18 @@ const errorMessage = ref('');
 const menuItems = ref([]);
 const menuItemId = ref(null);
 const confirmDeleteDialog = ref();
-const page = ref(1);
-const pageSize = ref(15);
-const totalRecords = ref(0);
+// const page = ref(1);
+// const pageSize = ref(100);
+// const totalRecords = ref(0);
 const details = reactive({
   name: '', price: 0, shortDescription: '', menu: '',
   image: '', description: '', choiceOf: []
 })
+
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+});
+
 
 //Get Data
 const getData = async () => {
@@ -32,10 +38,10 @@ const getData = async () => {
     const response = await  axios.get('/admin/menuItems',
 
         {
-          params: {
-            page: page.value,
-            pageSize: pageSize.value,
-          },
+          // params: {
+          //   page: page.value,
+          //   pageSize: pageSize.value,
+          // },
           headers: { 'Authorization': `Bearer ${store.token}`}
         }
     )
@@ -106,10 +112,10 @@ const viewDetails = async (id, menu) => {
   }
 } // ./view details
 
-const onPage = (event) => {
-  page.value = event.page + 1;
-  getData();
-};
+// const onPage = (event) => {
+//   page.value = event.page + 1;
+//   getData();
+// };
 
 //Confirm delete
 const confirmDelete = (id) => {
@@ -159,24 +165,39 @@ const deleteMenuItem = async () => {
 onBeforeRouteLeave(() => {
   document.querySelector("#close-modal").click();
 })
+
+
+
 </script>
 
 <template>
-<div class="container my-3">
+<div class="container mt-3 mb-5">
   <div class="row justify-content-center">
     <div class="col-md-10">
       <h4 class="text-center">Menüpunkte</h4>
       <div class="table-responsive mt-2">
         <!--        Table -->
-        <DataTable :value="menuItems" :paginator="true" :rows="pageSize" dataKey="id" :loading="loading" @page="onPage($event)"
+        <DataTable :value="menuItems" :paginator="true" :rows="10" dataKey="id" :loading="loading"
                    class="p-datatable-sm p-datatable-striped p-datatable-hoverable-rows p-datatable-gridlines"
                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport
-                   RowsPerPageDropdown" responsiveLayout="scroll"
-                   :totalRecords="totalRecords"
+                   RowsPerPageDropdown" responsiveLayout="scroll" v-model:filters="filters"
+                   :globalFilterFields="['name','menu']" filterDisplay="menu" :rowsPerPageOptions="[10, 15, 25]"
                    currentPageReportTemplate="Zeigt {first} bis {last} von {totalRecords} Einträgen">
+
+          <template #header>
+            <div class="d-flex justify-content-center align-items-center" style="height: 15px">
+              <span class="p-input-icon-left">
+                        <i class="pi pi-search" />
+                        <InputText v-model="filters['global'].value" placeholder="suchen" style="height: 30px;"/>
+                    </span>
+            </div>
+          </template>
+          <template #empty>
+            Kein Artikel gefunden.
+          </template>
+
           <template #loading>
             <h6 class="text-white fw-bold">Daten werden geladen. Bitte warten. <span class="spinner-border spinner-border-sm"></span></h6>
-
           </template>
           <Column field="name" header="Name" sortable class="data-table-font-size">
             <template #body="{data}">

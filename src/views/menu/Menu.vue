@@ -81,7 +81,6 @@ const saveMenu = async () => {
     )
 
     if (response.status === 201){
-      console.log(response.data)
       imagePath.value = response.data.path;
       menu.value.unshift({
         id: response.data.id,
