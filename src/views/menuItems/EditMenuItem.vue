@@ -103,7 +103,6 @@ const load = async () => {
 } // ./load data
 
 
-
 onMounted(() => {
   load();
 })

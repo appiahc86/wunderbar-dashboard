@@ -6,6 +6,7 @@ import Dashboard from '../views/Dashboard.vue';
 import  userRouter from "@/router/users/index";
 import menuRouter from "@/router/menu/index";
 import menuItemsRouter from "@/router/menuItems/index";
+import ordersRouter from "@/router/orders";
 
 
 const routes = [
@@ -26,6 +27,7 @@ const routes = [
     ...userRouter,
     ...menuRouter,
     ...menuItemsRouter,
+    ...ordersRouter,
 
 //    redirect to home page if route not found
     {

@@ -84,11 +84,11 @@ const logout = () => {
          <div class="dropdown">
           <a class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             <span>&#128073;</span>
-            Aufträge  <!--Orders-->
+            Bestellungen  <!--Orders-->
           </a>
           <ul class="dropdown-menu dropdown-menu-dark w-100">
-            <li><router-link :to="{name: 'home'}">
-              <span class="pi pi-eye"></span>&nbsp; View Images</router-link></li>
+            <li><router-link :to="{name: 'orders'}">
+              <span class="pi pi-circle"></span>&nbsp; die heutigen Befehle</router-link></li>
 
             <li><router-link :to="{name: 'home'}">
               <span class="pi pi-upload"></span>&nbsp; Upload Image </router-link></li>
@@ -106,9 +106,9 @@ const logout = () => {
       <div class="text-center dropdown mt-4">
         <span class="text-white" data-bs-toggle="dropdown" aria-expanded="false">
           <Avatar icon="pi pi-user" style="background-color:#2196F3; color: #ffffff; cursor: pointer;"
-                  v-if="store.token" shape="circle" @click="profileSidebar = true;"
+                  v-if="!store.token" shape="circle" @click="profileSidebar = true;"
            />
-          <span class="dropdown-toggle">&nbsp; {{ store.user.displayName || '' }}</span>
+          <span class="dropdown-toggle">&nbsp; {{ store.user.displayName || 'User ' }}</span>
         </span>
         <ul class="dropdown-menu w-100">
           <li><router-link :to="{name: 'home'}" class="dropdown-item fw-bold" style="cursor: pointer;"><span>&#128274;</span>Reset Password</router-link></li>
