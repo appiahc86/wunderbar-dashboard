@@ -1,170 +1,177 @@
 <script setup>
-import {ref, onMounted, reactive} from "vue";
 import Button from "primevue/button";
-import { useRouter, onBeforeRouteLeave } from "vue-router";
-import { useHomeStore } from "@/store/home";
+import {onMounted, reactive, ref} from "vue";
 import axios from "@/axios";
+import {useHomeStore} from "@/store/home";
+import {useComponentStore} from "@/store/componentStore";
+import PasswordReset from "@/components/PasswordReset.vue";
+import Dialog from "primevue/dialog";
+import {useRouter} from "vue-router";
 
-const closeModal = ref();
-const openModal = ref();
-const loading = ref(false);
-const loginError = ref('');
-const showPassword = ref(false);
 const store = useHomeStore();
 const router = useRouter();
+const componentStore = useComponentStore()
+const loading = ref(false);
+const error = ref('');
+const showPassword = ref(false)
+const loginData = reactive({email: '', password: ''})
+componentStore.authDialog = true;
 
-const loginData = reactive({    // Login Form Data
-  phoneNumber: null, password: ""
-})
-
-//on mounted hook show modal
-onMounted(() => {
-  if (store.token) return router.push({name: 'home'});
-  openModal.value.click();
-})
-
-//Close modal before leaving this page
-onBeforeRouteLeave( (to, from, next) => {
-  closeModal.value.click();
-  next();
-})
-
-//Validate phone number
-const validatePhoneNumber = (e) => {
-  e.target.value = e.target.value.replace(/[^0-9]/g, '');
-  e.target.value = e.target.value.replace(/(\..*)\./g, '$1');
+const resetLoginData = () => {
+  loginData.email = ''; loginData.password = '';
 }
 
-// .................Login.................
+//Login
 const login = async () => {
   try {
+    error.value = "";
     loading.value = true;
-    loginError.value = "";
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     //Validation
-    if (!loginData.phoneNumber) return loginError.value = "Please enter phone number";
-    if (loginData.phoneNumber.toString().length  !== 9) return loginError.value = "Please check phone number";
-    if (!loginData.password.trim()) return loginError.value = "Please provide a password";
+    if (!loginData.email.trim()) return error.value = "Bitte E-Mail-Adresse angeben";
+    if (!loginData.email.match(emailRegex)) return error.value = "Bitte geben Sie eine gültige E-Mail-Adresse ein";
+    if (!loginData.password.trim())  return error.value = "Bitte Passwort eingeben";
+
+
+
+
     //Send Data To Server
     const response = await  axios.post(
         '/admin/users/auth/login',
-        JSON.stringify(loginData),
+        JSON.stringify({
+          email: loginData.email.toLowerCase(),
+          password: loginData.password
+        })
     )
 
     if (response.status === 200) {
-      store.setToken(response.data.token);
-      store.setUser(response.data.user);
-      return router.push({name: 'home'});
+      componentStore.authDialog = false;
+      const payload = {
+        name: response.data.user.name,
+        email: response.data.user.email,
+        role:  response.data.user.role,
+        token: response.data.token
+      }
+      store.setUser(payload);
+      resetLoginData();
+      router.push({name: 'home'})
     }
 
 
+  }catch (e) {
+    if (e.response) return error.value = e.response.data;
+    if (e.request && e.request.status === 0)
+      return error.value = "Leider wurde die Verbindung zum Server abgelehnt. Bitte überprüfen Sie Ihre Internetverbindung oder versuchen Sie es später erneut";
 
-  } catch (e) {
-    if (e.response) return loginError.value = e.response.data;
-    if (e.request && e.request.status === 0) {
-      return loginError.value = 'Sorry, Connection to Server refused. Please check your internet connection or try again later';
-    }
+    return error.value = 'Entschuldigung, etwas ist schief gelaufen. Bitte versuchen Sie es später noch einmal';
 
-    return loginError.value = 'Sorry, something went wrong. Please try again later';
-
-  } finally { loading.value = false; }
+  }finally {
+    loading.value = false;
+  }
 
 }
+
+
+const openPasswordResetDialog = () => {
+  // componentStore.setDefaults();
+  componentStore.passwordResetDialog = true;
+}
+
+
 
 </script>
 
 <template>
 
-  <!--  this button launches the modal -->
-  <button type="button" ref="openModal" class="d-none mt-5 mb-5" data-bs-toggle="modal" data-bs-target="#authModal"></button>
+  <Dialog v-model:visible="componentStore.authDialog" maximizable
+           :style="{ width: '100vw' }" :closable="false"
+          :modal="true" class="auth-dialog" >
 
-  <!-- Modal -->
-  <div class="modal" id="authModal" tabindex="-1" data-bs-keyboard="false" aria-labelledby="authModal" aria-hidden="true">
-    <div class="modal-dialog modal-fullscreen">
-      <div class="modal-content">
-        <div class="modal-body"  style="background: #ccc;">
+    <div class="wrapper w-100">
 
-          <div class="wrapper w-100">
+      <section class="form-wrapper w-100 px-4">
 
-            <section class="form-wrapper w-100 px-4">
+        <h3 class="text-center mb-3 fw-bold">Admin Login <span>&#128274;</span></h3>
+        <section class="container-fluid">
+          <section class="row justify-content-center">
+            <section class="col-md-6 col-lg-4">
+              <form @submit.prevent="login">
+                <template v-if="error">
+                  <p class="text-white text-center">{{ error }}</p>
+                </template>
 
-              <h3 class="text-center mb-3 fw-bold">Admin Login <span>&#128274;</span></h3>
-              <section class="container-fluid">
-                <section class="row justify-content-center">
-                  <section class="col-md-6 col-lg-4">
-                    <form @submit.prevent="login">
-                      <template v-if="loginError">
-                        <p class="text-warning text-center" id="errorMessage">{{ loginError }}</p>
-                      </template>
-                      <section class="input-group">
-                        <section class="input-group-prepend">
-                          <section class="input-group-text p-2">E-mail</section>
-                        </section>
-                        <input type="tel" class="form-control shadow-none p-2" maxlength="10" v-model.number="loginData.phoneNumber"
-                               @input="validatePhoneNumber">
-                      </section>
+                  <input type="tel" class="form-control shadow-none p-2"
+                         placeholder="E-Mail-Adresse" v-model.trim="loginData.email">
+                <br>
+                <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none p-2"
+                       placeholder="Passwort" v-model="loginData.password">
 
-                      <br>
-                      <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none p-2"
-                             v-model="loginData.password" placeholder="Password">
-
-                      <section class="form-check mt-3">
-                        <input class="form-check-input mx-auto" id="showPassword" type="checkbox" v-model="showPassword">
-                        <label class="form-check-label" for="showPassword">
-                          &nbsp;Show Password
-                        </label>
-                      </section>
-
-                      <section class="text-center">
-                        <Button label="Login" type="submit" :loading="loading" loadingIcon="spinner-border spinner-border-sm"
-                                class="p-button  p-button-rounded mt-2 px-4 py-2"/>
-
-                      </section>
-
-                    </form>
-                  </section>
+                <section class="form-check mt-3">
+                  <input class="form-check-input mx-auto" id="showPassword" type="checkbox" v-model="showPassword">
+                  <label class="form-check-label" for="showPassword">
+                    &nbsp;Passwort anzeigen
+                  </label>
                 </section>
-              </section>
 
+                <p>Passwort vergessen?
+                  <span class="text-primary" @click="openPasswordResetDialog" style="cursor: pointer;">
+                     klicken Sie hier</span>
+                </p>
+
+                <section class="text-center">
+                  <Button label="Login" type="submit" :loading="loading" loadingIcon="spinner-border spinner-border-sm"
+                          class="p-button  p-button-rounded mt-2 px-4 py-2"/>
+                </section>
+
+              </form>
             </section>
-            <div><span class="dot"></span></div>
-            <div><span class="dot"></span></div>
-            <div><span class="dot"></span></div>
-            <div><span class="dot"></span></div>
-            <div><span class="dot"></span></div>
-            <div><span class="dot"></span></div>
-            <div><span class="dot"></span></div>
-            <div><span class="dot"></span></div>
-            <div><span class="dot"></span></div>
-            <div><span class="dot"></span></div>
-            <div><span class="dot"></span></div>
-            <div><span class="dot"></span></div>
-            <div><span class="dot"></span></div>
-            <div><span class="dot"></span></div>
-            <div><span class="dot"></span></div>
-          </div>
-          <!-- this button closes the modal -->
-          <button type="button" class="d-none" data-bs-dismiss="modal" ref="closeModal"></button>
-        </div>
+          </section>
+        </section>
+
+      </section>
+      <div><span class="dot"></span></div>
+      <div><span class="dot"></span></div>
+      <div><span class="dot"></span></div>
+      <div><span class="dot"></span></div>
+      <div><span class="dot"></span></div>
+      <div><span class="dot"></span></div>
+      <div><span class="dot"></span></div>
+      <div><span class="dot"></span></div>
+      <div><span class="dot"></span></div>
+      <div><span class="dot"></span></div>
+      <div><span class="dot"></span></div>
+      <div><span class="dot"></span></div>
+      <div><span class="dot"></span></div>
+      <div><span class="dot"></span></div>
+      <div><span class="dot"></span></div>
+    </div>
+
+  </Dialog>
+
+
+
+  <!--  Password Reset Dialog-->
+  <Dialog v-model:visible="componentStore.passwordResetDialog" header=" " :style="{ width: '50vw' }"
+          :breakpoints="{ '960px': '75vw', '641px': '100vw' }" position="center" :modal="true">
+    <div class="container-fluid container-lg">
+      <div class="row">
+        <PasswordReset />
       </div>
     </div>
-  </div>
-
-
+  </Dialog>
 
 </template>
 
 
 <style scoped>
-* {
-  margin: 0;
-  padding: 0;
-}
+
 .wrapper {
-  height: 100%;
+  height: 100vh;
   width: 100%;
   background: linear-gradient(180deg, #04fafd, 5%, #119dff, 50%, #030423);
   position: absolute;
   overflow: hidden;
+  top: 0 !important;
 }
 .wrapper .form-wrapper {
   top: 50%;
@@ -176,6 +183,7 @@ const login = async () => {
   word-spacing: 2px;
   color: #fff;
   font-weight: 888;
+  z-index: 100;
 }
 .wrapper div {
   height: 60px;

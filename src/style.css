@@ -7,3 +7,12 @@
   font-size: 0.75em;
 }
 
+.auth-dialog{
+  max-height: 100vh !important;
+}
+
+.auth-dialog .p-dialog-content {
+  padding: 0 !important;
+  height: 100vh !important;
+  margin-top: 0 !important;
+}

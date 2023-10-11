@@ -14,13 +14,13 @@ const routes = [
         path: '/',
         name: 'home',
         component: Home,
-        // meta: {requiresAuth: true}
+        meta: {requiresAuth: true}
     },
     {
         path: '/dashboard',
         name: 'dashboard',
         component: Dashboard,
-        // meta: {requiresAuth: true}
+        meta: {requiresAuth: true}
     },
 
     //Load imported routes
@@ -53,7 +53,7 @@ const router = createRouter({
 
 router.beforeEach((to, from) => {
     const store = useHomeStore();
-    if (to.meta.requiresAuth && !store.token) {
+    if (to.meta.requiresAuth && !store.isLoggedIn) {
         return {
             name: 'login',
             // save the location we were at to come back later

@@ -1,4 +1,5 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
+import router from "../router/index.js";
 import { parse, stringify,  } from 'zipson';
 
 // You can name the return value of `defineStore()` anything you want,
@@ -11,37 +12,39 @@ export const useHomeStore = defineStore('homeStore', {
     state: () => {
         return {
             user: {},
-            token: "",
-         }
+        }
     },
 
     getters: {
-
+        isLoggedIn() {
+            return (this.user.token && this.user.email);
+        }
     },
 
     actions: {
-        //Set Token
-     setToken(payload){ this.token = payload },
 
-    //set User
-    setUser(payload){ this.user = payload },
+        //Set User data
+        setUser (payload){
+            this.user = payload;
+        },
 
-       //Clear Token
-     clearToken(){ this.token = "" },
+        //logout
+        logout(){
+            this.user = {};
+            router.push({name: "login"})
+        },
 
-    //Clear User
-    clearUser(){ this.user = {} }
 
     },
 
     persist: {
-       key: '_loda',
-            storage: sessionStorage,
-            paths: ['token', 'user'],
-            serializer: {
-                deserialize: parse,
-                serialize: stringify
-            }
-        },
+        key: '_session',
+        storage: sessionStorage,
+        paths: ['user'],
+        serializer: {
+            deserialize: parse,
+            serialize: stringify
+        }
+    },
 
 })

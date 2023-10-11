@@ -34,7 +34,7 @@ const getMenu = async () => {
     menuLoading.value = true;
     const response = await  axios.get('/admin/menuItems/getMenu',
         {
-          headers: { 'Authorization': `Bearer ${store.token}`}
+          headers: { 'Authorization': `Bearer ${store.user.token}`}
         }
     )
 
@@ -69,7 +69,7 @@ const load = async () => {
     const response = await  axios.post('/admin/menuItems/view',
         {slug: route.params.slug},
         {
-          headers: { 'Authorization': `Bearer ${store.token}`}
+          headers: { 'Authorization': `Bearer ${store.user.token}`}
         }
     )
 
@@ -163,7 +163,7 @@ const saveData = async () => {
         myData,
         {
           headers: {
-            'Authorization': `Bearer ${store.token}`,
+            'Authorization': `Bearer ${store.user.token}`,
             'Content-Type': 'multipart/form-data'
           }
         }

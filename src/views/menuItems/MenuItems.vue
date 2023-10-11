@@ -42,7 +42,7 @@ const getData = async () => {
           //   page: page.value,
           //   pageSize: pageSize.value,
           // },
-          headers: { 'Authorization': `Bearer ${store.token}`}
+          headers: { 'Authorization': `Bearer ${store.user.token}`}
         }
     )
 
@@ -84,7 +84,7 @@ const viewDetails = async (id, menu) => {
     const response = await  axios.post('/admin/menuItems/viewDetails',
         {id},
         {
-          headers: { 'Authorization': `Bearer ${store.token}`}
+          headers: { 'Authorization': `Bearer ${store.user.token}`}
         }
     )
 
@@ -135,7 +135,7 @@ const deleteMenuItem = async () => {
     const response = await  axios.post('/admin/menuItems/delete',
         {id: menuItemId.value, image: foundImage.image},
         {
-          headers: { 'Authorization': `Bearer ${store.token}`}
+          headers: { 'Authorization': `Bearer ${store.user.token}`}
         }
     )
 

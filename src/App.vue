@@ -36,10 +36,8 @@ onMounted(() => {
 //Logout
 const logout = () => {
   profileSidebar.value = false;
-  store.clearToken();
-  store.clearUser();
+  store.logout();
   router.push({name: 'login'});
-  toast.add({severity:'success', summary: 'Success', detail: 'You are logged out', life: 4000});
 }
 </script>
 
@@ -60,7 +58,7 @@ const logout = () => {
             <router-link :to="{name: 'home'}"><span>&#128101;</span> Benutzer</router-link>
         </section>
       <section>
-        <router-link :to="{name: 'menu'}"><span>&#11088;</span> Speisekarte</router-link>
+        <router-link :to="{name: 'menu'}"><span>&#11088;</span> Menü</router-link>
       </section>
 
       <section>
@@ -106,9 +104,9 @@ const logout = () => {
       <div class="text-center dropdown mt-4">
         <span class="text-white" data-bs-toggle="dropdown" aria-expanded="false">
           <Avatar icon="pi pi-user" style="background-color:#2196F3; color: #ffffff; cursor: pointer;"
-                  v-if="!store.token" shape="circle" @click="profileSidebar = true;"
+                  v-if="!store.isLoggedIn" shape="circle" @click="profileSidebar = true;"
            />
-          <span class="dropdown-toggle">&nbsp; {{ store.user.displayName || 'User ' }}</span>
+          <span class="dropdown-toggle">&nbsp; {{ store.user.name || 'User ' }}</span>
         </span>
         <ul class="dropdown-menu w-100">
           <li><router-link :to="{name: 'home'}" class="dropdown-item fw-bold" style="cursor: pointer;"><span>&#128274;</span>Reset Password</router-link></li>

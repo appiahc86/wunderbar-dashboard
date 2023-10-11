@@ -12,9 +12,8 @@ const loading = ref(false);
 const saveLoading = ref(false);
 const editLoading = ref(false);
 const deleteLoading = ref(false);
-const saveMenuData = reactive({name: '', image: null});
-const editMenuData = reactive({id: null, name: '', image: null, imageToSave: null});
-const imagePath = ref('');
+const saveMenuData = reactive({name: ''});
+const editMenuData = reactive({id: null, name: ''});
 const confirmDeleteDialog = ref();
 const editDialog = ref();
 
@@ -24,13 +23,12 @@ const getMenu = async () => {
     loading.value = true;
     const response = await  axios.get('/admin/menu',
         {
-          headers: { 'Authorization': `Bearer ${store.token}`}
+          headers: { 'Authorization': `Bearer ${store.user.token}`}
         }
     )
 
     if (response.status === 200){
       menu.value = response.data.menu;
-      imagePath.value = response.data.path;
     }
 
   }catch (e) {
@@ -49,48 +47,29 @@ const getMenu = async () => {
 getMenu();
 
 
-const handleFileChange = (event) => {
-  const targetImageTag = document.getElementById('image');
-  if(typeof event.target.files[0] !== 'undefined'){
-    saveMenuData.image = event.target.files[0];
-    targetImageTag.src = window.URL.createObjectURL(event.target.files[0]);
-    targetImageTag.style.display = 'block';
-  }else {
-    saveMenuData.image = null;
-    targetImageTag.removeAttribute('src');
-    targetImageTag.style.display = 'none';
-  }
-}
 
 //Save Menu
 const saveMenu = async () => {
   try {
     saveLoading.value = true;
-    const formData = new FormData();
-    formData.append('name', saveMenuData.name);  // Add form fields
-    formData.append('image', saveMenuData.image);  // Add image file
 
     const response = await  axios.post('/admin/menu',
-        formData,
+        {
+          name: saveMenuData.name
+        },
         {
           headers: {
-            'Authorization': `Bearer ${store.token}`,
-            'Content-Type': 'multipart/form-data'
+            'Authorization': `Bearer ${store.user.token}`
           }
         }
     )
 
     if (response.status === 201){
-      imagePath.value = response.data.path;
       menu.value.unshift({
         id: response.data.id,
         name: saveMenuData.name,
-        image: response.data.image
       })
-      document.getElementById('image').style.display = 'none';
-      document.getElementById('saveFile').value = '';
       saveMenuData.name = "";
-      saveMenuData.image = null;
     }
 
   }catch (e) {
@@ -111,59 +90,43 @@ const saveMenu = async () => {
 
 //Show Edit category dialog
 const openEditDialog = (men) => {
-
-  document.querySelector('#editInputImage').value = "";
   editMenuData.id = null;
   editMenuData.name = '';
-  editMenuData.image = null;
-  editMenuData.imageToSave = null;
  editMenuData.id = men.id;
  editMenuData.name = men.name;
- editMenuData.image = men.image;
  editDialog.value.showModal();
-
 }
 
-const handleEditFileChange = (event) => {
-  editMenuData.imageToSave = event.target.files[0];
-  // document.getElementById('editImage').src = window.URL.createObjectURL(event.target.files[0]);
-}
 
 //Edit Menu
 const editMenu = async () => {
   try {
     editLoading.value = true;
-    const formData = new FormData();
-    formData.append('id', editMenuData.id);
-    formData.append('name', editMenuData.name);
-    formData.append('oldImage', editMenuData.image);
-    formData.append('image', editMenuData.imageToSave);  // Add image file
+
 
     const response = await  axios.post('/admin/menu/edit',
-        formData,
+        {
+          id:  editMenuData.id,
+          name: editMenuData.name
+        },
         {
           headers: {
-            'Authorization': `Bearer ${store.token}`,
-            'Content-Type': 'multipart/form-data'
+            'Authorization': `Bearer ${store.user.token}`
           }
         }
     )
 
     if (response.status === 200){
 
-      imagePath.value = response.data.path;
       for (const men of menu.value) {
         if (men.id.toString() === editMenuData.id.toString()){
           men.name = response.data.name;
-          if (editMenuData.imageToSave){men.image = response.data.image;}
           break;
         }
       }
 
       editMenuData.id = null;
       editMenuData.name = "";
-      editMenuData.image = null;
-      editMenuData.imageToSave = null;
     }
 
   }catch (e) {
@@ -204,7 +167,7 @@ const deleteMenu = async () => {
     const response = await  axios.post('/admin/menu/delete',
         {id: menuId.value, image: foundImage.image},
         {
-          headers: { 'Authorization': `Bearer ${store.token}`}
+          headers: { 'Authorization': `Bearer ${store.user.token}`}
         }
     )
 
@@ -240,11 +203,6 @@ const deleteMenu = async () => {
       <form @submit.prevent="saveMenu">
         <div class="mb-2">
 
-          <input type="file" accept="image/*" class="form-control mb-2"
-                 @change="handleFileChange" id="saveFile">
-
-          <img id="image" alt="image" width="80" height="40" style="display: none;"/>
-
         </div>
         <div class="input-group">
           <input type="text" class="form-control" placeholder="Menü hinzufügen"
@@ -274,16 +232,7 @@ const deleteMenu = async () => {
               </td>
             </template>
           </Column>
-          
-          <Column field="image" header="Bild"  class="data-table-font-size">
-            <template #body="{data}">
-              <td>
-                <img :src="imagePath + data.image" alt="image" width="80"
-                     height="40" v-if="data.image"/>
-                <img src="" alt="img" class="d-none" v-else>
-              </td>
-            </template>
-          </Column>
+
           
           <Column header="Bearbeiten" class="data-table-font-size"><!-- Edit  -->
             <template #body="{data}">
@@ -312,17 +261,7 @@ const deleteMenu = async () => {
   <dialog ref="editDialog" style="border: none;" class="p-3">
     <button class="text-white bg-danger" style="float: right;" @click="editDialog.close()">X</button><br><br>
     <form @submit.prevent="editMenu">
-      <div class="mb-2">
 
-        <input type="file" class="form-control mb-2" id="editInputImage" @change="handleEditFileChange"
-               accept="image/*"
-        >
-
-<!--        <img id="editImage" alt="image" width="80" height="40" v-show="editCatData.image || editCatData.imageToSave"-->
-<!--             :src="imagePath + editCatData.image"-->
-<!--        />-->
-
-      </div>
       <div class="input-group">
         <input type="text" class="form-control" placeholder="Kategorie eingeben"
                v-model.trim="editMenuData.name"  required>
