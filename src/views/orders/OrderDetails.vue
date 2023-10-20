@@ -4,7 +4,7 @@ import {ref} from "vue";
 import moment from "moment";
 import axios from "@/axios";
 import {useHomeStore} from "@/store/home";
-import {currency, formatNumber} from "@/functions";
+import {currency, formatNumber, getStatus} from "@/functions";
 
 const store = useHomeStore();
 const route = useRoute();
@@ -14,6 +14,7 @@ const order = ref([]);
 
 const confirmDeliverDialog = ref();
 const confirmCancelDialog = ref();
+const confirmMarkAsDelivered = ref();
 
 const cancelLoading = ref(false);
 const deliverLoading = ref(false);
@@ -87,7 +88,7 @@ const cancelOrder = async () => {
 }
 
 
-//deliver Order
+//Send Order
 const deliverOrder = async () => {
   try {
 
@@ -122,6 +123,42 @@ const deliverOrder = async () => {
   }
 }
 
+
+//Mark as delivered
+const markAsDelivered = async () => {
+  try {
+
+    deliverLoading.value = true;
+
+    const response = await axios.post("/admin/orders/delivered",
+        {id: route.params.id},
+        {
+          headers: { 'Authorization': `Bearer ${store.user.token}`}
+        }
+    )
+
+    if (response.status === 200){
+      confirmMarkAsDelivered.value.close();
+      toast.add({severity:'success', detail: 'Erfolg', life: 4000});
+      router.push({name: 'delivering-orders'});
+    }
+
+
+  }catch (e) {
+    if (e.response) return toast.add({severity:'warn', detail: `${e.response.data}`, life: 4000});
+    if (e.request && e.request.status === 0) {
+      return toast.add({severity:'error',
+        detail: `Leider wurde die Verbindung zum Server abgelehnt. Bitte überprüfen Sie Ihre Internetverbindung oder versuchen Sie es später erneut`,
+        life: 4000});
+    }
+
+    return toast.add({severity:'warn', detail: 'Entschuldigung, etwas ist schief gelaufen. Bitte versuchen Sie es später noch einmal',
+      life: 4000});
+  }finally {
+    deliverLoading.value = false;
+  }
+}
+
 </script>
 
 <template>
@@ -138,7 +175,7 @@ const deliverOrder = async () => {
       <div v-else>
 
         <div class="order-status text-center">
-          <h2>{{ order[0].deliveryStatus }}</h2>
+          <h2>{{ getStatus(order[0].deliveryStatus) }}</h2>
 
           <p>{{ moment(order[0].orderDate).format("YYYY-MM-DD")}}
             | {{ moment(order[0].orderDate).format("h:mm:ss a") }}</p>
@@ -207,8 +244,10 @@ const deliverOrder = async () => {
           </div>
 
           <div class="text-center my-5">
-            <button class="btn btn-primary me-4 mb-3"
+            <button class="btn btn-primary me-4 mb-3" v-if="order[0].deliveryStatus === 'pending'"
             @click="confirmDeliverDialog.showModal()">liefern</button>
+            <button class="btn btn-primary me-4 mb-3" v-else
+            @click="confirmMarkAsDelivered.showModal()">Als geliefert markieren</button>
             <button class="btn btn-danger mb-3"
                     @click="confirmCancelDialog.showModal()">Stornieren</button>
           </div>
@@ -257,6 +296,23 @@ const deliverOrder = async () => {
     </div>
   </dialog>
 
+
+
+  <!--      Confirm Mark as delivered dialog    -->
+  <dialog ref="confirmMarkAsDelivered" style="border: none;" class="p-5 pt-3">
+    <button class="text-white bg-danger float-end mb-2"
+            @click="confirmMarkAsDelivered.close()">X</button>
+    <div class="clearfix"></div>
+    <p>
+      Schließen Sie die Lieferung ab
+    </p>
+    <h6 class="text-center mt-3">Sind Sie sicher, dass Sie dies tun möchten?</h6>
+    <div class="text-center">
+      <button class="btn btn-success btn-sm" disabled v-if="cancelLoading">
+        <span class=" spinner-border spinner-border-sm"></span> Bitte warten</button>
+      <button v-else class="btn btn-success btn-sm" @click="markAsDelivered">Fortfahren</button>
+    </div>
+  </dialog>
 
 </template>
 

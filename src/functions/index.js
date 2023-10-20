@@ -3,5 +3,22 @@ export const formatNumber = (num) => {
         .replace('.', ',');
 }
 
-
+//Currency
 export const currency = '€';
+
+
+//Get Order status
+export const getStatus = (payload) => {
+    let returnValue = "warten"
+    switch (payload) {
+        case "waiting": returnValue = "warten";
+            break;
+        case "delivering": returnValue = "liefern";
+            break;
+        case "delivered": returnValue = "Geliefert";
+            break;
+        case "canceled": returnValue = "Abgesagt";
+            break;
+    }
+    return returnValue;
+}

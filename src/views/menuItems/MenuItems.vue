@@ -125,7 +125,7 @@ const confirmDelete = (id) => {
 }
 
 
-//Delet menuItem
+//Delete menuItem
 const deleteMenuItem = async () => {
   try {
 

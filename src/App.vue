@@ -86,10 +86,10 @@ const logout = () => {
           </a>
           <ul class="dropdown-menu dropdown-menu-dark w-100">
             <li><router-link :to="{name: 'orders'}">
-              <span class="pi pi-circle"></span>&nbsp; die heutigen Befehle</router-link></li>
+              <span class="pi pi-circle"></span>&nbsp; Neue Bestellungen</router-link></li>
 
-            <li><router-link :to="{name: 'home'}">
-              <span class="pi pi-upload"></span>&nbsp; Upload Image </router-link></li>
+            <li><router-link :to="{name: 'delivering-orders'}">
+              <span class="pi pi-circle"></span>&nbsp; Liefern </router-link></li>
           </ul>
         </div>
       </section>
@@ -106,10 +106,9 @@ const logout = () => {
           <Avatar icon="pi pi-user" style="background-color:#2196F3; color: #ffffff; cursor: pointer;"
                   v-if="!store.isLoggedIn" shape="circle" @click="profileSidebar = true;"
            />
-          <span class="dropdown-toggle">&nbsp; {{ store.user.name || 'User ' }}</span>
+          <span class="dropdown-toggle">&nbsp; {{ store.user.name || 'User' }}</span>
         </span>
         <ul class="dropdown-menu w-100">
-          <li><router-link :to="{name: 'home'}" class="dropdown-item fw-bold" style="cursor: pointer;"><span>&#128274;</span>Reset Password</router-link></li>
           <li class="dropdown-divider"></li>
           <li><a class="dropdown-item fw-bold" @click="logout" style="cursor: pointer;"><span>&#9940;</span> Logout</a></li>
         </ul>

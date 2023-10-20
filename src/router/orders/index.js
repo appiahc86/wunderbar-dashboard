@@ -1,5 +1,6 @@
 import OrdersIndexView from "@/views/orders/OrdersIndexView.vue";
 import OrderDetails from "@/views/orders/OrderDetails.vue";
+import DeliveringOrders from "@/views/orders/DeliveringOrders.vue";
 
 const ordersRouter = [
     {
@@ -12,6 +13,12 @@ const ordersRouter = [
         path: '/orders/:id',
         name: 'view-order',
         component: OrderDetails,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: '/orders/delivering',
+        name: 'delivering-orders',
+        component: DeliveringOrders,
         meta: {requiresAuth: true}
     },
 

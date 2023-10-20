@@ -1,13 +1,13 @@
 <script setup>
 import axios from "@/axios";
-import {onMounted, ref} from "vue";
+import { ref } from "vue";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Paginator from "primevue/paginator";
 import { useHomeStore } from "@/store/home";
 import moment from "moment";
 import { formatNumber, currency } from "@/functions";
-import {onBeforeRouteLeave, useRouter} from "vue-router";
+import { useRouter } from "vue-router";
 
 const page = ref(1);
 const loading = ref(false);
@@ -20,8 +20,9 @@ const router = useRouter()
 //Get Data
 const getData = async () => {
   try {
+    loading.value = true;
+    const response = await  axios.get('/admin/orders/delivering',
 
-    const response = await  axios.get('/admin/orders',
         {
           params: {
             page: page.value,
@@ -29,6 +30,7 @@ const getData = async () => {
           },
           headers: { 'Authorization': `Bearer ${store.user.token}`}
         }
+
     )
 
     if (response.status === 200){
@@ -50,22 +52,7 @@ const getData = async () => {
     loading.value = false;
   }
 }
-
-let interval;
-
-onMounted(() => {
-  loading.value = true;
-  getData();
-  interval = setInterval(() => {
-    getData();
-  }, 60000)
-})
-
-onBeforeRouteLeave(() => {
-  clearInterval(interval);
-})
-
-
+getData();
 
 
 const onPage = (event) => {
@@ -144,6 +131,7 @@ const onPage = (event) => {
   </div>
 
 </template>
+
 
 <style scoped>
 
