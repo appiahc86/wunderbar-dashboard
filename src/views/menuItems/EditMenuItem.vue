@@ -115,19 +115,58 @@ const addChoice = () => {
 }
 
 
-//Handle file change
-const handleFileChange = (event) => {
+//Handle File Change
+function handleFileChange() {
+  const fileInput = document.getElementById("saveFile");
   const targetImageTag = document.getElementById('image');
-  if(typeof event.target.files[0] !== 'undefined'){
-    formData.newImage = event.target.files[0];
-    targetImageTag.src = window.URL.createObjectURL(event.target.files[0]);
-    targetImageTag.style.display = 'block';
-  }else {
+  const selectedFile = fileInput.files[0];
+
+
+  formData.newImage = null;
+  targetImageTag.removeAttribute('src');
+  targetImageTag.style.display = 'none';
+
+  if (selectedFile){
+
+    let reader = new FileReader();
+
+//Read the contents of Image File.
+    reader.readAsDataURL(selectedFile);
+    reader.onload = function (e) {
+
+      //Initiate the JavaScript Image object.
+      let image = new Image();
+
+      //Set the Base64 string return from FileReader as source.
+      image.src = e.target.result;
+
+      //Validate the File Height and Width.
+      image.onload = function () {
+        if (this.height !== 200 && this.width !== 200) {
+          fileInput.value = "";
+          toast.add({severity:'warn',
+            detail: `Das Bild sollte 200 x 200 Pixel groß sein`,
+            life: 4000});
+          return false;
+        }
+        //Image is Valid
+        formData.newImage = selectedFile;
+        targetImageTag.src = window.URL.createObjectURL(selectedFile);
+        targetImageTag.style.display = 'block';
+        return true;
+      };
+    };
+
+  } // ./If selectedFile
+  else {
     formData.newImage = null;
     targetImageTag.removeAttribute('src');
     targetImageTag.style.display = 'none';
   }
+
+
 }
+
 
 
 //save data
@@ -244,10 +283,10 @@ const saveData = async () => {
             <img alt="image" :src="path + formData.image" width="80" height="40" class="mb-3"/>
           </template>
 <!--          <template v-else>-->
-            <img id="image" alt="image" width="80" height="40" style="display: none;" class="mb-3"/>
+          <img id="image" alt="image" width="80" height="80"  style="display: none;"/><br>
 <!--          </template>-->
 
-          <textarea cols="5" rows="2" v-model="formData.shortDescription" maxlength="50"
+          <textarea cols="5" rows="2" v-model="formData.shortDescription" maxlength="150"
                     class="form-control shadow-none" placeholder="kurze Beschreibung"></textarea><br>
 
           <Editor v-model="formData.description" editorStyle="height: 180px"

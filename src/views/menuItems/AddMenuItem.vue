@@ -111,7 +111,7 @@ function handleFileChange() {
 
 
   }
-// }
+
 
 //save data
 const saveData = async () => {
@@ -216,11 +216,15 @@ const addChoice = () => {
 
         <div id="choice-container" class="choice-container"></div>
 
-        <input type="file" accept="image/*" class="form-control mb-2"
+        <small class="fw-bold">200 x 200</small>
+    <div class="mb-2">
+        <input type="file" accept="image/*" class="form-control"
                @change="handleFileChange" id="saveFile">
+    </div>
+
         <img id="image" alt="image" width="80" height="80"  style="display: none;"/><br>
 
-        <textarea cols="5" rows="2" v-model="formData.shortDescription" maxlength="50"
+        <textarea cols="5" rows="2" v-model="formData.shortDescription" maxlength="150"
                   class="form-control shadow-none" placeholder="kurze Beschreibung"></textarea><br>
 
         <Editor v-model="formData.description" editorStyle="height: 180px"
