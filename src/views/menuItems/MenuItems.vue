@@ -238,7 +238,7 @@ onBeforeRouteLeave(() => {
               </td>
             </template>
           </Column>
-          <Column header="Details" class="data-table-font-size"><!-- Delete  -->
+          <Column header="Löschen" class="data-table-font-size"><!-- Delete  -->
             <template #body="{data}">
               <td class="text-danger">
                 <span class="pi pi-trash" style="cursor: pointer;" title="Löschen"
