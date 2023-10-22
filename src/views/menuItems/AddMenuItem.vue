@@ -61,19 +61,60 @@ getMenu();
 
 
 //Handle file change
-const handleFileChange = (event) => {
+// const handleFileChange = function (event) {
+//   const targetImageTag = document.getElementById('image');
+//
+//
+//   if(typeof event.target.files[0] !== 'undefined'){
+//     formData.image = event.target.files[0];
+//     targetImageTag.src = window.URL.createObjectURL(event.target.files[0]);
+//     targetImageTag.style.display = 'block';
+//
+//   }else {
+//     formData.image = null;
+//     targetImageTag.removeAttribute('src');
+//     targetImageTag.style.display = 'none';
+//   }
+//
+//
+// }
+
+
+function handleFileChange() {
+  const fileInput = document.getElementById("saveFile");
   const targetImageTag = document.getElementById('image');
-  if(typeof event.target.files[0] !== 'undefined'){
-    formData.image = event.target.files[0];
-    targetImageTag.src = window.URL.createObjectURL(event.target.files[0]);
-    targetImageTag.style.display = 'block';
-  }else {
-    formData.image = null;
-    targetImageTag.removeAttribute('src');
-    targetImageTag.style.display = 'none';
+  const selectedFile = fileInput.files[0];
+
+  if (selectedFile) {
+    const fileReader = new FileReader();
+
+    fileReader.onload = function (e) {
+      const img = new Image();
+
+      img.onload = function () {
+        const width = this.width;
+        const height = this.height;
+
+        if (width !== 200 && height !== 200) {
+          fileInput.value = "";
+          targetImageTag.src = "";
+          targetImageTag.style.display = 'none';
+        }
+
+      };
+
+      img.src = e.target.result;
+      fileReader.readAsDataURL(selectedFile);
+      formData.image = selectedFile;
+      targetImageTag.src = window.URL.createObjectURL(selectedFile);
+      targetImageTag.style.display = 'block';
+
+    };
+
+    fileReader.readAsDataURL(selectedFile);
+
   }
 }
-
 
 //save data
 const saveData = async () => {

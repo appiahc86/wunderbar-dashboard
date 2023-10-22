@@ -244,7 +244,7 @@ const markAsDelivered = async () => {
           </div>
 
           <div class="text-center my-5">
-            <button class="btn btn-primary me-4 mb-3" v-if="order[0].deliveryStatus === 'pending'"
+            <button class="btn btn-primary me-4 mb-3" v-if="order[0].deliveryStatus === 'waiting'"
             @click="confirmDeliverDialog.showModal()">liefern</button>
             <button class="btn btn-primary me-4 mb-3" v-else
             @click="confirmMarkAsDelivered.showModal()">Als geliefert markieren</button>

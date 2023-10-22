@@ -54,9 +54,9 @@ const logout = () => {
         <section>
           <router-link :to="{name: 'home'}"><span>&#127968;</span> Heim</router-link>
         </section>
-         <section>
-            <router-link :to="{name: 'home'}"><span>&#128101;</span> Benutzer</router-link>
-        </section>
+<!--         <section>-->
+<!--            <router-link :to="{name: 'home'}"><span>&#128101;</span> Benutzer</router-link>-->
+<!--        </section>-->
       <section>
         <router-link :to="{name: 'menu'}"><span>&#11088;</span> Menü</router-link>
       </section>
@@ -97,7 +97,7 @@ const logout = () => {
 
       <!--   Settings   -->
       <section>
-        <router-link :to="{name: 'home'}"><span>&#128101;</span> Einstellungen</router-link>
+        <router-link :to="{name: 'home'}"><span>&#10017;</span> Einstellungen</router-link>
       </section>
 
 
@@ -126,13 +126,13 @@ const logout = () => {
     </a>
 
     <!--   Online users   -->
-    <div class="justify-content-center mx-auto">
-      <div class="navbar-nav">
-        <a class="nav-link fw-bold">
-          Benutzer online: {{ usersOnline }}
-        </a>
-      </div>
-    </div>
+<!--    <div class="justify-content-center mx-auto">-->
+<!--      <div class="navbar-nav">-->
+<!--        <a class="nav-link fw-bold">-->
+<!--          Benutzer online: {{ usersOnline }}-->
+<!--        </a>-->
+<!--      </div>-->
+<!--    </div>-->
 
   </div>
 </nav>

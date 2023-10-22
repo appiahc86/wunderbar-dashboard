@@ -66,8 +66,6 @@ onBeforeRouteLeave(() => {
 })
 
 
-
-
 const onPage = (event) => {
   page.value = event.page + 1;
   getData();
