@@ -276,11 +276,12 @@ const saveData = async () => {
             </template>
           </div>
 
+          <small class="fw-bold">200 x 200</small>
           <input type="file" accept="image/*" class="form-control mb-3"
                  @change="handleFileChange" id="saveFile">
 
           <template v-if="formData.image && !formData.newImage">
-            <img alt="image" :src="path + formData.image" width="80" height="40" class="mb-3"/>
+            <img alt="image" :src="path + formData.image" width="80" height="80" class="mb-3"/>
           </template>
 <!--          <template v-else>-->
           <img id="image" alt="image" width="80" height="80"  style="display: none;"/><br>
