@@ -60,61 +60,58 @@ const getMenu = async () => {
 getMenu();
 
 
-//Handle file change
-// const handleFileChange = function (event) {
-//   const targetImageTag = document.getElementById('image');
-//
-//
-//   if(typeof event.target.files[0] !== 'undefined'){
-//     formData.image = event.target.files[0];
-//     targetImageTag.src = window.URL.createObjectURL(event.target.files[0]);
-//     targetImageTag.style.display = 'block';
-//
-//   }else {
-//     formData.image = null;
-//     targetImageTag.removeAttribute('src');
-//     targetImageTag.style.display = 'none';
-//   }
-//
-//
-// }
-
-
+//Handle File Change
 function handleFileChange() {
   const fileInput = document.getElementById("saveFile");
   const targetImageTag = document.getElementById('image');
   const selectedFile = fileInput.files[0];
 
-  if (selectedFile) {
-    const fileReader = new FileReader();
 
-    fileReader.onload = function (e) {
-      const img = new Image();
+  formData.image = null;
+  targetImageTag.removeAttribute('src');
+  targetImageTag.style.display = 'none';
 
-      img.onload = function () {
-        const width = this.width;
-        const height = this.height;
+  if (selectedFile){
 
-        if (width !== 200 && height !== 200) {
+    let reader = new FileReader();
+
+//Read the contents of Image File.
+    reader.readAsDataURL(selectedFile);
+    reader.onload = function (e) {
+
+      //Initiate the JavaScript Image object.
+      let image = new Image();
+
+      //Set the Base64 string return from FileReader as source.
+      image.src = e.target.result;
+
+      //Validate the File Height and Width.
+      image.onload = function () {
+        if (this.height !== 200 && this.width !== 200) {
           fileInput.value = "";
-          targetImageTag.src = "";
-          targetImageTag.style.display = 'none';
+           toast.add({severity:'warn',
+            detail: `Das Bild sollte 200 x 200 Pixel groß sein`,
+            life: 4000});
+          return false;
         }
-
+        //Image is Valid
+          formData.image = selectedFile;
+          targetImageTag.src = window.URL.createObjectURL(selectedFile);
+          targetImageTag.style.display = 'block';
+        return true;
       };
-
-      img.src = e.target.result;
-      fileReader.readAsDataURL(selectedFile);
-      formData.image = selectedFile;
-      targetImageTag.src = window.URL.createObjectURL(selectedFile);
-      targetImageTag.style.display = 'block';
-
     };
 
-    fileReader.readAsDataURL(selectedFile);
+  } // ./If selectedFile
+  else {
+    formData.image = null;
+    targetImageTag.removeAttribute('src');
+    targetImageTag.style.display = 'none';
+  }
+
 
   }
-}
+// }
 
 //save data
 const saveData = async () => {
@@ -221,7 +218,7 @@ const addChoice = () => {
 
         <input type="file" accept="image/*" class="form-control mb-2"
                @change="handleFileChange" id="saveFile">
-        <img id="image" alt="image" width="80" height="40" style="display: none;"/><br>
+        <img id="image" alt="image" width="80" height="80"  style="display: none;"/><br>
 
         <textarea cols="5" rows="2" v-model="formData.shortDescription" maxlength="50"
                   class="form-control shadow-none" placeholder="kurze Beschreibung"></textarea><br>
