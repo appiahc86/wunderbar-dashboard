@@ -100,7 +100,7 @@ const openPasswordResetDialog = () => {
                   <p class="text-white text-center">{{ error }}</p>
                 </template>
 
-                  <input type="tel" class="form-control shadow-none p-2"
+                  <input type="email" class="form-control shadow-none p-2"
                          placeholder="E-Mail-Adresse" v-model.trim="loginData.email">
                 <br>
                 <input :type="showPassword ? 'text' : 'password'" class="form-control shadow-none p-2"
