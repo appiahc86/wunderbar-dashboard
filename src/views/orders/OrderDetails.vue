@@ -69,7 +69,7 @@ const cancelOrder = async () => {
     if (response.status === 200){
       confirmCancelDialog.value.close();
       toast.add({severity:'success', detail: 'Erfolg', life: 4000});
-      router.push({name: 'orders'});
+      router.go(-1);
     }
 
   }catch (e) {
@@ -104,7 +104,7 @@ const deliverOrder = async () => {
     if (response.status === 200){
       confirmDeliverDialog.value.close();
       toast.add({severity:'success', detail: 'Erfolg', life: 4000});
-      router.push({name: 'orders'});
+      router.go(-1);
     }
 
 
@@ -140,7 +140,7 @@ const markAsDelivered = async () => {
     if (response.status === 200){
       confirmMarkAsDelivered.value.close();
       toast.add({severity:'success', detail: 'Erfolg', life: 4000});
-      router.push({name: 'delivering-orders'});
+      router.go(-1);
     }
 
 
@@ -174,11 +174,15 @@ const markAsDelivered = async () => {
       <!--      Else -->
       <div v-else>
 
+        <template v-if="order.length">
+
         <div class="order-status text-center">
           <h2>{{ getStatus(order[0].deliveryStatus) }}</h2>
 
           <p>{{ moment(order[0].orderDate).format("YYYY-MM-DD")}}
             | {{ moment(order[0].orderDate).format("h:mm:ss a") }}</p>
+          <br>
+          <p>{{moment(order[0].orderDate)}}</p>
         </div>
 
 
@@ -247,12 +251,26 @@ const markAsDelivered = async () => {
             <button class="btn btn-primary me-4 mb-3" v-if="order[0].deliveryStatus === 'waiting'"
             @click="confirmDeliverDialog.showModal()">liefern</button>
             <button class="btn btn-primary me-4 mb-3" v-else
-            @click="confirmMarkAsDelivered.showModal()">Als geliefert markieren</button>
+            @click="confirmMarkAsDelivered.showModal()"
+              :disabled="order[0].deliveryStatus === 'delivered'"
+            >Als geliefert markieren</button>
             <button class="btn btn-danger mb-3"
                     @click="confirmCancelDialog.showModal()">Stornieren</button>
           </div>
 
         </template>
+
+        </template> <!-- ./ if order.length       -->
+
+
+        <template v-else>
+          <h3 class="text-center mt-5">
+            Leider wurde kein Datensatz gefunden
+          </h3><br>
+          <h1 class="text-center display-2">&#128549;</h1>
+        </template>
+
+
       </div>
 
     </div>
@@ -308,9 +326,11 @@ const markAsDelivered = async () => {
     </p>
     <h6 class="text-center mt-3">Sind Sie sicher, dass Sie dies tun möchten?</h6>
     <div class="text-center">
-      <button class="btn btn-success btn-sm" disabled v-if="cancelLoading">
+      <button class="btn btn-success btn-sm" disabled v-if="deliverLoading">
         <span class=" spinner-border spinner-border-sm"></span> Bitte warten</button>
-      <button v-else class="btn btn-success btn-sm" @click="markAsDelivered">Fortfahren</button>
+      <button v-else class="btn btn-success btn-sm" @click="markAsDelivered">
+        Fortfahren
+      </button>
     </div>
   </dialog>
 

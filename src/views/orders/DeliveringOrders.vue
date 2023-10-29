@@ -15,7 +15,8 @@ const pageSize = ref(10);
 const totalRecords = ref(0);
 const orders = ref([]);
 const store = useHomeStore();
-const router = useRouter()
+const router = useRouter();
+const orderId = ref(null);
 
 //Get Data
 const getData = async () => {
@@ -55,6 +56,13 @@ const getData = async () => {
 getData();
 
 
+//Search Order
+const searchOrder = () => {
+  if (orderId.value)
+  router.push({name: 'view-order', params: {id: orderId.value} })
+  else return false;
+}
+
 const onPage = (event) => {
   page.value = event.page + 1;
   getData();
@@ -67,6 +75,17 @@ const onPage = (event) => {
   <div class="container mt-3 mb-5">
     <div class="row justify-content-center">
       <div class="col-md-10">
+
+        <h4 class="text-center my-3">Liefern</h4>
+
+        <form @submit.prevent="searchOrder">
+        <div class="input-group">
+            <input type="search" placeholder="Auftragsnummer" v-model.trim="orderId"
+                   class="shadow-none form-control" style="max-width: 200px !important">
+            <button class="btn btn-primary"><span class="pi pi-search"></span></button>
+        </div>
+      </form>
+
         <div class="table-responsive mt-2">
           <!--        Table -->
           <DataTable :value="orders" :paginator="true" :rows="10" dataKey="id" :loading="loading"

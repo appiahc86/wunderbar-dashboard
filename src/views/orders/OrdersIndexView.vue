@@ -78,6 +78,9 @@ const onPage = (event) => {
   <div class="container mt-3 mb-5">
     <div class="row justify-content-center">
       <div class="col-md-10">
+
+        <h4 class="text-center my-3">Neue Bestellungen</h4>
+
         <div class="table-responsive mt-2">
           <!--        Table -->
           <DataTable :value="orders" :paginator="true" :rows="10" dataKey="id" :loading="loading"
