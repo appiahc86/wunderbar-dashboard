@@ -7,7 +7,7 @@ const store = useHomeStore();
 <template>
 <div class="text-center mt-3">
   <h3 class="mb-3">Willkommen
-    <span class="fw-bold text-uppercase">
+    <span class="fw-bold text-uppercase" translate="no">
       {{ store.user.name }}
     </span></h3>
 </div>

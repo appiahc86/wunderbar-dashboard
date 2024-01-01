@@ -7,6 +7,9 @@ import  userRouter from "@/router/users/index";
 import menuRouter from "@/router/menu/index";
 import menuItemsRouter from "@/router/menuItems/index";
 import ordersRouter from "@/router/orders";
+import settingsRouter from "@/router/settings";
+import zipCodesRouter from "@/router/zipCodes";
+
 
 
 const routes = [
@@ -28,6 +31,8 @@ const routes = [
     ...menuRouter,
     ...menuItemsRouter,
     ...ordersRouter,
+    ...settingsRouter,
+    ...zipCodesRouter,
 
 //    redirect to home page if route not found
     {

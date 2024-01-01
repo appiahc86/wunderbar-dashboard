@@ -2,17 +2,21 @@
 import { io }  from "socket.io-client";
 import { ref, onMounted } from 'vue';
 import Toast from "primevue/toast";
+import InputSwitch from "primevue/inputswitch";
 import Avatar from "primevue/avatar";
 import  { useRouter } from "vue-router";
 import { useToast } from "primevue/usetoast";
 import { useHomeStore } from "@/store/home";
 import axios from "@/axios";
+
 window.toast = useToast();
 const store = useHomeStore();
 const router = useRouter();
 
+const loading = ref(false);
 const usersOnline = ref(0);
 const profileSidebar = ref(false);
+const allowOrders = ref(false);
 
 const socket = io(`${axios.defaults.baseURL}`);
 window.socket = socket;
@@ -22,16 +26,63 @@ socket.on("onlineUsers", (users) => {
   usersOnline.value = users
 })
 
+//Toggle AllowOrders
+const toggleAllowOrders = async () => {
+  try {
+    loading.value = true;
 
-onMounted(() => {
-  const sidebarToggler = document.querySelector("#menu-toggle");
-  const wrapper = document.querySelector("#wrapper");
-  sidebarToggler.onclick = (e) => {
-    e.preventDefault();
-    wrapper.classList.toggle("toggled");
+    const response = axios.post("/admin/settings",
+        {allowOrders: allowOrders.value},
+        {
+          headers: { 'Authorization': `Bearer ${store.user.token}`}
+        }
+    )
+
+    if (response.status === 200){
+      allowOrders.value = response.data.allowOrders;
+    }
+
+  }catch (e) {
+     allowOrders.value =  !allowOrders.value
+    if (e.response) return toast.add({severity:'warn', detail: `${e.response.data}`, life: 4000});
+    if (e.request && e.request.status === 0) {
+      return toast.add({severity:'error',
+        detail: `Leider wurde die Verbindung zum Server abgelehnt. Bitte überprüfen Sie Ihre Internetverbindung oder versuchen Sie es später erneut`,
+        life: 4000});
+    }
+
+    return toast.add({severity:'warn', detail: 'Entschuldigung, etwas ist schief gelaufen. Bitte versuchen Sie es später noch einmal',
+      life: 4000});
+  }finally {
+    loading.value = false;
+  }
+}
+
+onMounted(async () => {
+
+  try {
+    loading.value = false;
+    const sidebarToggler = document.querySelector("#menu-toggle");
+    const wrapper = document.querySelector("#wrapper");
+    sidebarToggler.onclick = (e) => {
+      e.preventDefault();
+      wrapper.classList.toggle("toggled");
+    }
+
+    //Get Settings
+    const response = await axios.get("/admin/settings");
+    if (response.status === 200){
+      allowOrders.value = !!response.data.settings.allowOrders;
+    }
+
+  }catch (e) {
+    console.clear();
+  }finally {
+    loading.value = false;
   }
 
 })
+
 
 //Logout
 const logout = () => {
@@ -94,10 +145,29 @@ const logout = () => {
         </div>
       </section>
 
-
-      <!--   Settings   -->
+<!--      Zip Codes -->
       <section>
-        <router-link :to="{name: 'home'}"><span>&#10017;</span> Einstellungen</router-link>
+        <router-link :to="{name: 'zipcodes'}"><span>&#127968;</span> Postleitzahlen verwalten</router-link>
+      </section>
+      <!--   Settings   -->
+<!--      <section>-->
+<!--        <router-link :to="{name: 'settings'}"><span>&#10017;</span> Einstellungen</router-link>-->
+<!--      </section>  -->
+
+
+      <section>
+        <div class="text-center">
+          <div class="" v-if="loading">
+            <div class="" style="">
+              <h5><span class="spinner-border"></span></h5>
+            </div>
+          </div>
+          <div class="" v-else>
+            <small class="text-white">Allow Orders</small><br>
+            <InputSwitch @change="toggleAllowOrders" v-model="allowOrders" />
+          </div>
+
+        </div>
       </section>
 
 
