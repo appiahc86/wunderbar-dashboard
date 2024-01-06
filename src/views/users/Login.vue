@@ -36,12 +36,13 @@ const login = async () => {
 
 
     //Send Data To Server
-    const response = await  axios.post(
-        '/admin/users/auth/login',
-        JSON.stringify({
+    const response = await  axios.post('/admin/users/auth/login',
+
+
+        {
           email: loginData.email.toLowerCase(),
           password: loginData.password
-        })
+        }
     )
 
     if (response.status === 200) {
