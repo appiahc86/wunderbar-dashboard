@@ -9,7 +9,7 @@ import {useRouter} from "vue-router";
 
 const router = useRouter();
 const store = useHomeStore();
-const zipCodes = ref([]);
+const zipcodes = ref([]);
 const zipCodeId = ref('');
 const loading = ref(false);
 const deleteLoading = ref(false);
@@ -27,7 +27,7 @@ const getData = async () => {
     )
 
     if (response.status === 200){
-      zipCodes.value = response.data.zipCodes;
+      zipcodes.value = response.data.zipcodes;
     }
 
   }catch (e) {
@@ -66,7 +66,7 @@ const deleteItem = async () => {
     )
 
     if (response.status === 200) {
-      zipCodes.value = zipCodes.value.filter(rec => {
+      zipcodes.value = zipcodes.value.filter(rec => {
         return rec.id.toString() !== zipCodeId.value.toString();
       })
       zipCodeId.value = '';
@@ -104,7 +104,7 @@ const deleteItem = async () => {
 
         <div class="table-responsive mt-2">
           <!--        Table -->
-          <DataTable :value="zipCodes" :paginator="true" :rows="10" dataKey="id" :loading="loading"
+          <DataTable :value="zipcodes" :paginator="true" :rows="10" dataKey="id" :loading="loading"
                      class="p-datatable-sm p-datatable-striped p-datatable-hoverable-rows p-datatable-gridlines"
                      paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport
                    RowsPerPageDropdown" responsiveLayout="scroll" :rowsPerPageOptions="[10,25, 50]"

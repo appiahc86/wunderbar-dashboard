@@ -54,9 +54,9 @@ const saveMenu = async () => {
     saveLoading.value = true;
 
     const response = await  axios.post('/admin/menu',
-        {
+        JSON.stringify({
           name: saveMenuData.name
-        },
+        }),
         {
           headers: {
             'Authorization': `Bearer ${store.user.token}`
