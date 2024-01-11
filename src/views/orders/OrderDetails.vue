@@ -179,10 +179,10 @@ const markAsDelivered = async () => {
         <div class="order-status text-center">
           <h2>{{ getStatus(order[0].deliveryStatus) }}</h2>
 
-          <p>{{ moment(order[0].orderDate).format("YYYY-MM-DD")}}
-            | {{ moment(order[0].orderDate).format("h:mm:ss a") }}</p>
+          <p>
+            {{ moment(order[0].orderDate).format("YYYY-MM-DD")}}
+            | <b>{{ moment(order[0].orderDate).format("h:mm:ss a") }}</b></p>
           <br>
-          <p>{{moment(order[0].orderDate)}}</p>
         </div>
 
 
@@ -207,18 +207,17 @@ const markAsDelivered = async () => {
             <h5 class="mb-2 fw-bold">Lieferdetails</h5>
             <address class="fst-italic">
               <span class="pi pi-map-marker"></span>
-              Straße: {{ order[0].deliveryAddress.street }}<br>
-              Hausnummer: {{ order[0].deliveryAddress.houseNumber }}<br>
-              Postleitzahl: {{ order[0].deliveryAddress.postCode }} <br>
-              Etage: {{ order[0].deliveryAddress.floor }} <br>
-              Stadt: {{ order[0].deliveryAddress.city }} <br>
-              Telefonnummer: {{ order[0].deliveryAddress.phone }} <br>
-              Anmerkung: {{ order[0].note }} <br>
+              <b>Straße: </b>{{ order[0].deliveryAddress.street }}<br>
+              <b>Hausnummer: </b>{{ order[0].deliveryAddress.houseNumber }}<br>
+              <b>Postleitzahl: </b>{{ order[0].deliveryAddress.postCode }} <br>
+              <b>Etage: </b>{{ order[0].deliveryAddress.floor }} <br>
+              <b>Stadt: </b>{{ order[0].deliveryAddress.town }} <br>
+              <b>Telefonnummer: </b>{{ order[0].deliveryAddress.phone }} <br>
             </address>
           </div>
 
           <div class="row" v-if="order[0].note">
-            <h5 class="mb-2 fw-bold">Anmerkung</h5>
+            <h5 class="mb-2 fw-bold">Notiz</h5>
             <p>
               {{ order[0].note }}
             </p>
