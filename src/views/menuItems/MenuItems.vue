@@ -255,7 +255,7 @@ onBeforeRouteLeave(() => {
 
 <!-- Details Modal -->
 
-  <div class="modal" id="viewModal" tabindex="-1" aria-hidden="true">
+  <div class="modal modal-lg" id="viewModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header border-0">
@@ -269,7 +269,7 @@ onBeforeRouteLeave(() => {
           <div class="" v-else>
             <div class="container-fluid">
               <div class="row justify-content-center">
-                <div class="col-lg-6">
+                <div class="col-lg-10">
                   <div v-if="details.image.trim()" class="text-center">
                     <img :src="details.image" class="mb-3" alt="image" width="150" height="150">
                     <hr>

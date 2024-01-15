@@ -189,9 +189,12 @@ const addChoice = () => {
     <div class="col-md-6">
       <h6 class="text-center mt-2">Artikel hinzufügen</h6><br>
       <form @submit.prevent="saveData">
+
+        <small>Artikelname</small>
         <input type="text" class="form-control shadow-none" placeholder="Artikelname"
                v-model.trim="formData.name"  required><br>
 
+        <small>wähle eine Option</small>
         <div class="input-group">
           <select class="form-control shadow-none" v-model="formData.menuId" required>
             <option value="">--wähle eine Option--</option>
@@ -204,7 +207,7 @@ const addChoice = () => {
         </div><br>
 
 
-
+        <small>Preis</small>
         <input type="number" class="form-control shadow-none" placeholder="Preis"
                v-model.number="formData.price"  required step="0.01"><br>
 
@@ -224,9 +227,11 @@ const addChoice = () => {
 
         <img id="image" alt="image" width="80" height="80"  style="display: none;"/><br>
 
+        <small>kurze Beschreibung</small>
         <textarea cols="5" rows="2" v-model="formData.shortDescription" maxlength="150"
                   class="form-control shadow-none" placeholder="kurze Beschreibung"></textarea><br>
 
+        <small>Weitere Produktinformationen</small>
         <Editor v-model="formData.description" editorStyle="height: 180px"
                 placeholder="Weitere Produktinformationen" /><br>
         <button v-if="loading" class="btn btn-primary fw-bold" disabled>

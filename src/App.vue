@@ -149,10 +149,11 @@ const logout = () => {
       <section>
         <router-link :to="{name: 'zipcodes'}"><span>&#127968;</span> Postleitzahlen verwalten</router-link>
       </section>
-      <!--   Settings   -->
-<!--      <section>-->
-<!--        <router-link :to="{name: 'settings'}"><span>&#10017;</span> Einstellungen</router-link>-->
-<!--      </section>  -->
+
+      <!--   Dashboard Users   -->
+      <section>
+        <router-link :to="{name: 'dashboard-users'}"><span>&#128104;</span> Dashboard-Benutzer</router-link>
+      </section>
 
 
       <section>
@@ -163,7 +164,7 @@ const logout = () => {
             </div>
           </div>
           <div class="" v-else>
-            <small class="text-white">Allow Orders</small><br>
+            <small class="text-white">Bestellungen zulassen</small><br>
             <InputSwitch @change="toggleAllowOrders" v-model="allowOrders" />
           </div>
 
@@ -218,6 +219,7 @@ const logout = () => {
 <!-- /#wrapper -->
 
   <Toast position="center" style="padding: 0;" class="my-toast"/>
+
 </template>
 
 <style scoped>
