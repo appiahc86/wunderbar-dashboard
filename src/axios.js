@@ -3,6 +3,7 @@ import {useHomeStore} from "./store/home.js";
 
 
 // axios.defaults.baseURL = "http://localhost:3000";
+// axios.defaults.baseURL = "http://192.168.1.100:3000";
 axios.defaults.baseURL = "https://res.nantylotto.com";
 axios.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
 axios.defaults.headers.patch['Content-Type'] = 'application/json; charset=utf-8';

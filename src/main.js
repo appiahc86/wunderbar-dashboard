@@ -8,6 +8,7 @@ import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import VueApexCharts from "vue3-apexcharts";
 
+
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
