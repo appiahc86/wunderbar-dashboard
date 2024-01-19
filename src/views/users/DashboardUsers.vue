@@ -85,9 +85,9 @@ getData();
 
             <Column field="role" header="Rolle" class="data-table-font-size">
               <template #body="{data}">
-                <td>
-                  {{ parseInt(data.role) === 1 ? "Administrator" : "Benutzer" }}
-                </td>
+                <td v-if="parseInt(data.role) === 1">Administrator</td>
+                <td v-if="parseInt(data.role) === 4">Benutzer</td>
+                <td v-if="parseInt(data.role) === 5">Lieferperson</td>
               </template>
             </Column>
 

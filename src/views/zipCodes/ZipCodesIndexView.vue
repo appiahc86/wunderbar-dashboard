@@ -14,7 +14,7 @@ const zipCodeId = ref('');
 const loading = ref(false);
 const deleteLoading = ref(false);
 const confirmDeleteDialog = ref();
-
+const qr = ref('Inno360')
 
 //Get all menu
 const getData = async () => {
@@ -87,6 +87,11 @@ const deleteItem = async () => {
     confirmDeleteDialog.value.close();
   }
 }
+
+
+
+import VueQrcode from "vue-qrcode";
+
 </script>
 
 <template>
@@ -179,6 +184,9 @@ const deleteItem = async () => {
       </div>
     </dialog>
 
+
+
+    <vue-qrcode :value="qr"></vue-qrcode>
 
   </div>
 </template>

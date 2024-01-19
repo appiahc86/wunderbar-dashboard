@@ -79,8 +79,14 @@ const addUser = async () => {
           </label><br>
           <label for="">
             <input type="radio" class="p-radiobutton" name="role"
-                   v-model="regData.role" value="2" required>
+                   v-model="regData.role" value="4" required>
              <b>&nbsp; Benutzer</b>
+          </label>
+          <br>
+          <label for="">
+            <input type="radio" class="p-radiobutton" name="role"
+                   v-model="regData.role" value="5" required>
+            <b>&nbsp; Lieferperson</b>
           </label>
         </div>
 

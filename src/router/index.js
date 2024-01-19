@@ -3,6 +3,7 @@ import {useHomeStore} from "@/store/home";
 
 import Home from '../views/Home.vue';
 import Dashboard from '../views/Dashboard.vue';
+import ScanQrCode from "@/views/ScanQrCode.vue";
 import  userRouter from "@/router/users/index";
 import menuRouter from "@/router/menu/index";
 import menuItemsRouter from "@/router/menuItems/index";
@@ -23,6 +24,12 @@ const routes = [
         path: '/dashboard',
         name: 'dashboard',
         component: Dashboard,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: '/scan-receipt',
+        name: 'scan-receipt',
+        component: ScanQrCode,
         meta: {requiresAuth: true}
     },
 

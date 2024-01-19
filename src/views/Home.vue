@@ -1,37 +1,25 @@
 <script setup>
 import { useHomeStore } from "@/store/home";
 import {ref} from "vue";
+import {useRouter} from "vue-router";
+
 const store = useHomeStore();
+const router = useRouter();
 
 const val = ref(null);
-const onDecode = (data) => {
-  val.value = data
-}
-// import { QrStream, QrCapture, QrDropzone } from 'vue3-qr-reader'
-// import { StreamBarcodeReader, ImageBarcodeReader  } from "@teckel/vue-barcode-reader";
-
-import { QrStream, QrCapture, QrDropzone } from 'vue3-qr-reader';
-
 
 </script>
 
 <template>
-<div class="text-center mt-3">
+<div class="text-center mt-3 d-flex">
   <h3 class="mb-3">Willkommen
     <span class="fw-bold text-uppercase" translate="no">
       {{ store.user.name }}
     </span></h3>
 
+    <button class="center-me" @click="router.push({name: 'scan-receipt'})"
+    >QR-Code scannen</button>
 
-
-  <div class="stream">
-    <qr-stream @decode="onDecode" class="mb">
-      <div style="color: red;" class="frame"></div>
-    </qr-stream>
-  </div>
-  <div class="result">
-    Result: {{val}}
-  </div>
 
 </div>
 
@@ -39,5 +27,16 @@ import { QrStream, QrCapture, QrDropzone } from 'vue3-qr-reader';
 
 <style scoped>
 
+.center-me {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+@media screen and (max-width: 600px){
+  .center-me {
+    left: 35% !important;
+  }
+}
 
 </style>
