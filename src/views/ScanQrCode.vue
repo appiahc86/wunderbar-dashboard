@@ -1,6 +1,6 @@
 <script setup>
 import { useHomeStore } from "@/store/home";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import { QrStream, QrCapture, QrDropzone } from 'vue3-qr-reader';
 import axios from "@/axios";
 import {useRouter} from "vue-router";
@@ -8,24 +8,40 @@ import {useRouter} from "vue-router";
 const store = useHomeStore();
 const router = useRouter();
 const loading = ref(false);
-let val = null;
+const loadingDialog = ref(null);
+
 const onDecode = (data) => {
-  val = data;
- sentToServer();
+
+ sentToServer(data);
+
 }
 
-const sentToServer = async () => {
+const sentToServer = async (code) => {
   try {
     loading.value = true;
-    return alert(val)
-    const response = await axios.get('/admin/scan',
+    loadingDialog.value.showModal();
+
+    //validation
+    if (!code) {
+      return toast.add({severity: 'warn',
+        detail: 'QRcode-Informationen wurden nicht erfasst', life: 6000})
+    }
+    if (!code.startsWith("pizza-wunderbar-")){
+      return toast.add({severity: 'warn',
+        detail: 'Leider ist dies keine gültige Bestellnummer', life: 6000})
+    }
+
+    code = code.replace("pizza-wunderbar-", "");
+
+    const response = await axios.post('/admin/qrcode/scan',
+        {code},
         {
           headers: {'Authorization': `Bearer ${store.user.token}`}
         }
     )
 
     if (response.status === 200) {
-       return toast.add({severity: 'warn', detail: 'Erfolg', life: 6000})
+       return toast.add({severity: 'success', detail: 'Erfolg', life: 6000})
     }
 
 
@@ -45,10 +61,10 @@ const sentToServer = async () => {
     });
   } finally {
     loading.value = false;
+    loadingDialog.value.close();
     router.push({name: 'home'});
   }
 }
-
 
 
 
@@ -58,7 +74,13 @@ const sentToServer = async () => {
   <div class="text-center mt-3 d-flex">
 
 
-      <div class="stream">
+      <dialog ref="loadingDialog" class="text-center bg-transparent"
+              style="border: transparent;">
+        <span class="spinner spinner-border"></span>
+      </dialog>
+
+
+      <div class="stream" v-if="!loading">
         <qr-stream @decode="onDecode" class="mb">
           <div style="color: red;" class="frame"></div>
         </qr-stream>

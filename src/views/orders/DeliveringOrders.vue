@@ -76,7 +76,7 @@ const onPage = (event) => {
     <div class="row justify-content-center">
       <div class="col-md-10">
 
-        <h4 class="text-center my-3">Liefern</h4>
+        <h4 class="text-center my-3">Gedruckte Quittungen</h4>
 
         <form @submit.prevent="searchOrder">
         <div class="input-group">

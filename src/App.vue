@@ -140,7 +140,7 @@ const logout = () => {
               <span class="pi pi-circle"></span>&nbsp; Neue Bestellungen</router-link></li>
 
             <li><router-link :to="{name: 'delivering-orders'}">
-              <span class="pi pi-circle"></span>&nbsp; Liefern </router-link></li>
+              <span class="pi pi-circle"></span>&nbsp; Gedruckte Quittungen </router-link></li>
           </ul>
         </div>
       </section>

@@ -13,7 +13,7 @@ export const getStatus = (payload) => {
     switch (payload) {
         case "waiting": returnValue = "warten";
             break;
-        case "delivering": returnValue = "liefern";
+        case "delivering": returnValue = "warten";
             break;
         case "delivered": returnValue = "Geliefert";
             break;
