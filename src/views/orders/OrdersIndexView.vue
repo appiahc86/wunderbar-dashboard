@@ -94,7 +94,7 @@ const onPage = (event) => {
             <template #loading>
               <h6 class="text-white fw-bold">Daten werden geladen. Bitte warten. <span class="spinner-border spinner-border-sm"></span></h6>
             </template>
-            <Column field="id" header="Auftragsnummer" sortable class="data-table-font-size">
+            <Column field="id" header="Auftragsnummer"  class="data-table-font-size">
               <template #body="{data}">
                 <td>
                   {{ data.id }}
@@ -102,7 +102,7 @@ const onPage = (event) => {
               </template>
             </Column>
 
-            <Column field="orderDate" header="Datum"  class="data-table-font-size">
+            <Column field="orderDate" header="Zeit"  class="data-table-font-size">
               <template #body="{data}">
                 <td>
                  {{ moment(data.orderDate).format("h:mm:ss a") }}

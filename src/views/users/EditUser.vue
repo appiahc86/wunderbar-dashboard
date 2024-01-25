@@ -119,12 +119,12 @@ const editUser = async () => {
 
           <small>Rolle</small>
           <div class="form-group mb-3">
-            <label for="role">
+            <label for="role" class="mb-2">
               <input type="radio" class="p-radiobutton" name="role"
                      v-model="regData.role" value="1" required>
               <b>&nbsp; Administrator</b>
             </label><br>
-            <label for="role2">
+            <label for="role2" class="mb-2">
               <input type="radio" class="p-radiobutton" name="role"
                      v-model="regData.role" value="4" required>
               <b>&nbsp; Benutzer</b>

@@ -241,7 +241,7 @@ const printReceipt = () => {
         <div class="mt-0" style="font-size: 11px;">
           <span>
             {{ moment(order[0].orderDate).format("YYYY-MM-DD")}}
-            | <b>{{ moment(order[0].orderDate).format("h:mm:ss a") }}</b>
+<!--            | <b>{{ moment(order[0].orderDate).format("h:mm:ss a") }}</b>-->
           </span>
           <b style="float: right;">#{{ route.params.id }}</b>
         </div>
@@ -263,8 +263,8 @@ const printReceipt = () => {
           <div class="row" style="font-size: 11px;">
             <div class="col">
               <span><b>{{ ord.qty }}x</b>&nbsp;</span>
-              <span class="text-capitalize">{{ ord.menuItemName }} </span><br>
-              <small class="text-muted" v-if="ord.choiceOf">{{ ord.choiceOf }}</small>
+              <span class="text-capitalize">{{ ord.menuItemName }}</span><br>
+              <small class="text-muted" v-if="ord.choiceOf">( {{ ord.choiceOf }} )</small>
             </div>
             <div class="col" style="text-align: right;">
               {{ formatNumber(ord.price * ord.qty) }} {{ currency }}
@@ -287,8 +287,9 @@ const printReceipt = () => {
         </address>
 
         <div class=""  v-if="order[0].note" style="font-size: 11px; text-align: center">
+          <br>
           <div>Notiz</div>
-          <p>{{order[0].note}}</p>
+          <div>{{order[0].note}}</div>
         </div>
 
         <div style="font-size: 12px !important">
