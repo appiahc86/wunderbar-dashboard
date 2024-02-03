@@ -18,7 +18,7 @@ const val = ref(null);
     </span></h3>
 
     <button class="center-me" @click="router.push({name: 'scan-receipt'})"
-    >QR-Code scannen</button>
+            v-if="store.isDeliveryPerson">QR-Code scannen</button>
 
 
 </div>

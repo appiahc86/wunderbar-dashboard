@@ -20,19 +20,19 @@ const userRouter = [
         path: '/users/add',
         name: 'add-user',
         component: AddUser,
-        meta: {requiresAuth: true}
+        meta: {requiresAuth: true, isAdmin: true}
     },
     {
         path: '/users/edit/:id',
         name: 'edit-user',
         component: EditUser,
-        meta: {requiresAuth: true}
+        meta: {requiresAuth: true, isAdmin: true}
     },
     {
         path: '/dashboard/users/',
         name: 'dashboard-users',
         component: DashboardUsers,
-        meta: {requiresAuth: true}
+        meta: {requiresAuth: true, isAdmin: true}
     },
 ]
 

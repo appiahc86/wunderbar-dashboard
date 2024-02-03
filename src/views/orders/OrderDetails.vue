@@ -190,9 +190,15 @@ const printReceipt = () => {
             <button disabled v-if="deliverLoading" class="btn btn-sm btn-dark"
             ><span class="spinner-border spinner-border-sm"></span> Bitte warten</button>
 
+
             <button @click="deliverOrder" v-else class="btn btn-sm btn-dark"
-                    :disabled="order[0].deliveryStatus === 'delivered'"
+                    :disabled="order[0].deliveryStatus === 'delivered' || order[0].paymentStatus !== 'successful'"
             ><span class="pi pi-print"></span>&nbsp;Drucken</button>
+
+            <div v-if="order[0].paymentStatus !== 'successful'">
+              <small class="text-danger">Die Zahlung ist noch nicht erfolgreich</small>
+            </div>
+
 
           </div>
 

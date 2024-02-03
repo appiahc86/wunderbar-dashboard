@@ -5,7 +5,7 @@ const menuRouter = [
         path: '/menu',
         name: 'menu',
         component: Menu,
-        meta: {requiresAuth: true}
+        meta: {requiresAuth: true, isAdmin: true}
     },
 
 ]

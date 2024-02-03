@@ -7,19 +7,19 @@ const zipCodesRouter = [
         path: '/zipcodes',
         name: 'zipcodes',
         component: ZipCodesIndexView,
-        meta: {requiresAuth: true}
+        meta: {requiresAuth: true, isAdmin: true}
     },
     {
         path: '/zipcodes/add',
         name: 'add-zipcode',
         component: AddZipCodeView,
-        meta: {requiresAuth: true}
+        meta: {requiresAuth: true, isAdmin: true}
     },
     {
         path: '/zipcodes/edit/:id',
         name: 'edit-zipcode',
         component: EditZipCodeView,
-        meta: {requiresAuth: true}
+        meta: {requiresAuth: true, isAdmin: true}
     },
 
 ]

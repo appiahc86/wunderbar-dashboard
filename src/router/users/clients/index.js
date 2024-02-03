@@ -5,7 +5,7 @@ const clientUserRouter = [
         path: '/clients/users',
         name: 'client-users',
         component: UserIndex,
-        meta: {requiresAuth: true}
+        meta: {requiresAuth: true, isAdmin: true}
     },
     
 ]

@@ -7,19 +7,19 @@ const ordersRouter = [
         path: '/orders',
         name: 'orders',
         component: OrdersIndexView,
-        meta: {requiresAuth: true}
+        meta: {requiresAuth: true, isUser: true}
     },
     {
         path: '/orders/:id',
         name: 'view-order',
         component: OrderDetails,
-        meta: {requiresAuth: true}
+        meta: {requiresAuth: true, isUser: true}
     },
     {
         path: '/orders/delivering',
         name: 'delivering-orders',
         component: DeliveringOrders,
-        meta: {requiresAuth: true}
+        meta: {requiresAuth: true, isUser: true}
     },
 
 ]

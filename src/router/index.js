@@ -30,7 +30,7 @@ const routes = [
         path: '/scan-receipt',
         name: 'scan-receipt',
         component: ScanQrCode,
-        meta: {requiresAuth: true}
+        meta: {requiresAuth: true, isDeliveryPerson: true}
     },
 
     //Load imported routes
@@ -65,6 +65,7 @@ const router = createRouter({
 
 router.beforeEach((to, from) => {
     const store = useHomeStore();
+    //Requires authentication
     if (to.meta.requiresAuth && !store.isLoggedIn) {
         return {
             name: 'login',
@@ -72,6 +73,30 @@ router.beforeEach((to, from) => {
             query: { redirect: to.fullPath },
         }
     }
+
+
+    //Authorization For Admin
+    if (to.meta.isAdmin && !store.isAdmin) {
+        return {
+            name: 'home',
+        }
+    }
+
+    //Authorization For users
+    if (to.meta.isUser && !store.isUser) {
+        return {
+            name: 'home',
+        }
+    }
+
+
+    //Authorization For Delivery Persons
+    if (to.meta.isDeliveryPerson && !store.isDeliveryPerson) {
+        return {
+            name: 'home',
+        }
+    }
+
 })
 
 

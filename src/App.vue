@@ -1,5 +1,5 @@
 <script setup>
-import { io }  from "socket.io-client";
+// import { io }  from "socket.io-client";
 import { ref, onMounted } from 'vue';
 import Toast from "primevue/toast";
 import InputSwitch from "primevue/inputswitch";
@@ -18,13 +18,13 @@ const usersOnline = ref(0);
 const profileSidebar = ref(false);
 const allowOrders = ref(false);
 
-const socket = io(`${axios.defaults.baseURL}`);
-window.socket = socket;
-socket.emit('join-admin-users', 'admin');
+// const socket = io(`${axios.defaults.baseURL}`);
+// window.socket = socket;
+// socket.emit('join-admin-users', 'admin');
 
-socket.on("onlineUsers", (users) => {
-  usersOnline.value = users
-})
+// socket.on("onlineUsers", (users) => {
+//   usersOnline.value = users
+// })
 
 //Toggle AllowOrders
 const toggleAllowOrders = async () => {
@@ -76,7 +76,7 @@ onMounted(async () => {
     }
 
   }catch (e) {
-    console.clear();
+    console.log(e.message)
   }finally {
     loading.value = false;
   }
@@ -98,7 +98,7 @@ const logout = () => {
 <!-- Sidebar -->
 <div id="sidebar-wrapper">
     <div class="sidebar-nav">
-        <section class="sidebar-brand">
+        <section class="sidebar-brand" v-if="store.isUser">
           <router-link :to="{name: 'dashboard'}"><span>&#127962;</span> Armaturenbrett</router-link>
         </section>
         
@@ -108,29 +108,49 @@ const logout = () => {
 <!--         <section>-->
 <!--            <router-link :to="{name: 'home'}"><span>&#128101;</span> Benutzer</router-link>-->
 <!--        </section>-->
-      <section>
-        <router-link :to="{name: 'menu'}"><span>&#11088;</span> Menü</router-link>
-      </section>
 
-      <section>
-        <div class="dropdown">
-          <a class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            <span>&#127869;</span>
-            Menüpunkte <!--Menu Items-->
-          </a>
-          <ul class="dropdown-menu dropdown-menu-dark w-100">
-            <li><router-link :to="{name: 'menu-items'}">
-              <span class="pi pi-list"></span>&nbsp; Menüpunkte auflisten</router-link></li>
 
-            <li><router-link :to="{name: 'add-menu-item'}">
-              <span class="pi pi-plus-circle"></span>&nbsp; Menüpunkt hinzufügen</router-link></li>
-
-          </ul>
-        </div>
-      </section>
+      <div v-if="store.isAdmin"> <!--  Admin Wrapper    -->
+        <section>
+          <router-link :to="{name: 'menu'}"><span>&#11088;</span> Menü</router-link>
+        </section>
 
         <section>
-         <div class="dropdown">
+          <div class="dropdown">
+            <a class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              <span>&#127869;</span>
+              Menüpunkte <!--Menu Items-->
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark w-100">
+              <li><router-link :to="{name: 'menu-items'}">
+                <span class="pi pi-list"></span>&nbsp; Menüpunkte auflisten</router-link></li>
+
+              <li><router-link :to="{name: 'add-menu-item'}">
+                <span class="pi pi-plus-circle"></span>&nbsp; Menüpunkt hinzufügen</router-link></li>
+
+            </ul>
+          </div>
+        </section>
+
+
+        <!--      Zip Codes -->
+        <section>
+          <router-link :to="{name: 'zipcodes'}"><span>&#127968;</span> Postleitzahlen verwalten</router-link>
+        </section>
+
+        <!--   Dashboard Users   -->
+        <section>
+          <router-link :to="{name: 'dashboard-users'}"><span>&#128104;</span> Dashboard-Benutzer</router-link>
+        </section>
+      </div> <!--  ./Admin Wrapper  End   -->
+
+
+
+
+
+
+      <section  v-if="store.isUser">
+        <div class="dropdown">
           <a class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             <span>&#128073;</span>
             Bestellungen  <!--Orders-->
@@ -145,18 +165,8 @@ const logout = () => {
         </div>
       </section>
 
-<!--      Zip Codes -->
-      <section>
-        <router-link :to="{name: 'zipcodes'}"><span>&#127968;</span> Postleitzahlen verwalten</router-link>
-      </section>
 
-      <!--   Dashboard Users   -->
-      <section>
-        <router-link :to="{name: 'dashboard-users'}"><span>&#128104;</span> Dashboard-Benutzer</router-link>
-      </section>
-
-
-      <section>
+      <section  v-if="store.isUser">
         <div class="text-center">
           <div class="" v-if="loading">
             <div class="" style="">
@@ -177,7 +187,7 @@ const logout = () => {
           <Avatar icon="pi pi-user" style="background-color:#2196F3; color: #ffffff; cursor: pointer;"
                   v-if="!store.isLoggedIn" shape="circle" @click="profileSidebar = true;"
            />
-          <span class="dropdown-toggle">&nbsp; {{ store.user.name || 'User' }}</span>
+          <span class="dropdown-toggle">&nbsp; {{ store?.user?.name || 'User' }}</span>
         </span>
         <ul class="dropdown-menu w-100">
           <li class="dropdown-divider"></li>

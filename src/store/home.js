@@ -16,9 +16,21 @@ export const useHomeStore = defineStore('homeStore', {
     },
 
     getters: {
+
         isLoggedIn() {
-            return (this.user.token && this.user.email);
-        }
+            return (this?.user?.token && this?.user?.email);
+        },
+
+        isAdmin() {
+            return(this?.user?.role === 1);
+        },
+        isUser() {
+            return(this?.user?.role === 4 || this?.user?.role === 1);
+        },
+        isDeliveryPerson() {
+            return(this?.user?.role === 5);
+        },
+
     },
 
     actions: {
