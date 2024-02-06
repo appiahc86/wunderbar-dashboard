@@ -146,6 +146,7 @@ const printReceipt = () => {
           <div class="row">
             <h5 class="mb-2 fw-bold">Lieferdetails</h5>
             <address class="fst-italic">
+              <b>Name: </b>{{ order[0].deliveryAddress.name }}<br>
               <b>Straße: </b>{{ order[0].deliveryAddress.street }}<br>
               <b>Hausnummer: </b>{{ order[0].deliveryAddress.houseNumber }}<br>
               <b>Postleitzahl: </b>{{ order[0].deliveryAddress.postCode }} <br>
@@ -284,6 +285,7 @@ const printReceipt = () => {
             <!--    Delivery Address    -->
         <address style="font-size: 11px;">
           <br>
+          <b>Name: </b>{{ order[0].deliveryAddress.name }}<br>
           <b>Straße: </b>{{ order[0].deliveryAddress.street }}<br>
           <b>Hausnummer: </b>{{ order[0].deliveryAddress.houseNumber }}<br>
           <b>Postleitzahl: </b>{{ order[0].deliveryAddress.postCode }} <br>
